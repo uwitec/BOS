@@ -405,6 +405,5 @@
   	<module>bos-dao</module>
   	<module>bos-service</module>
   	<module>bos-web</module>
-  	<module>bos_domain</module>
   </modules>
 </project>
