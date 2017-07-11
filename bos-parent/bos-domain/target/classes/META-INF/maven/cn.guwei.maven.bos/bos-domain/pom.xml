@@ -8,6 +8,13 @@
   <artifactId>bos-domain</artifactId>
   
   <dependencies>
+  	<dependency>
+ 		<groupId>junit</groupId>
+ 		<artifactId>junit</artifactId>
+ 		<scope>test</scope>
+ 	</dependency>
+  
+  
        <!-- spring -->
   	<dependency>
   		<groupId>org.springframework</groupId>
@@ -89,7 +96,7 @@
 						<!--  hibernate.properties 文件 插件需要连接数据库 配置信息 -->
 						<propertyfile>src/main/resources/hibernate.properties</propertyfile>
 						<!-- 生成实体类默认生成包名 -->
-						<packagename>cn.itcast.mavenbos.domain</packagename>
+						<packagename>cn.guwei.bos.domain</packagename>
 						<jdk5>true</jdk5>
 						<!-- true  生成注解  /false  没有注解   -->
 						<ejb3>true</ejb3>

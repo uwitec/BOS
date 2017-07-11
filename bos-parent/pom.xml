@@ -16,7 +16,7 @@
   	<mysql.version>5.0.8</mysql.version>
   	<servlet.version>2.5</servlet.version>
   	<jsp.version>2.0</jsp.version>
-  	<junit.version>4.11</junit.version>
+  	<junit.version>4.12</junit.version>
   	<!-- 反向生成实体类 -->
   	<hibernate-tools.version>3.2.4.GA</hibernate-tools.version>
   	 <!-- poi java解析和读取 office -->

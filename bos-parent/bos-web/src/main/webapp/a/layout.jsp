@@ -37,7 +37,7 @@
 					 if(treeNode.page!=undefined && treeNode.page!=""){
 						var flag = $('#tt').tabs('exists',treeNode.name);
 						if (flag) {
-							$('tt').tabs('select',treeNode.name);
+							$('#tt').tabs('select',treeNode.name);
 						} else {
 							 $('#tt').tabs('add',{ 
 
@@ -56,7 +56,6 @@
 					}  
 				}
 			},
-				
 			data: {
 				simpleData: {
 					enable: true
