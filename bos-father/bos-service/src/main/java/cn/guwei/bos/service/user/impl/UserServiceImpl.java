@@ -37,11 +37,11 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User findUserByUsernameAndPassword(String username, String password) {
+	public User findUserByEmailAndPassword(String email, String password) {
 		//关键字查询
 //		User user = userDao.findUserByEmailAndPassword(username,password);
 		//jpql语句查询  
-		User user = userDao.findUserByUsernameAndPassword(username,password);
+		User user = userDao.login(email,password);
 		
 		
 		return user;

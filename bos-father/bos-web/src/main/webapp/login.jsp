@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="s" uri="/struts-tags"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -8,6 +9,22 @@
 <script src="${pageContext.request.contextPath }/js/jquery-1.8.3.js" type="text/javascript"></script>
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath }/css/style.css" />
 <link type="text/css" rel="stylesheet" href="${pageContext.request.contextPath }/css/style_grey.css" />
+<!-- 导入easyui类库 -->
+<link id="easyuiTheme" rel="stylesheet" type="text/css"
+	href="${pageContext.request.contextPath }/js/easyui/themes/default/easyui.css">
+<script type="text/javascript"
+	src="${pageContext.request.contextPath }/js/easyui/jquery.easyui.min.js"></script>
+<link rel="stylesheet" type="text/css"
+	href="${pageContext.request.contextPath }/css/default.css">
+<script type="text/javascript"
+	src="${pageContext.request.contextPath }/js/easyui/jquery.easyui.min.js"></script>
+<script type="text/javascript"
+	src="${pageContext.request.contextPath }/js/easyui/locale/easyui-lang-zh_CN.js"></script>
+<!-- ztree -->
+<link rel="stylesheet" type="text/css"
+	href="${pageContext.request.contextPath }/js.ztree/zTreeStyle.css">
+<script type="text/javascript"
+	src="${pageContext.request.contextPath }/js/ztree/jquery.ztree.all-3.5.js"></script>
 <style>
 input[type=text] {
 	width: 80%;
@@ -43,6 +60,59 @@ input[type=password] {
 	if(window.self != window.top){
 		window.top.location = window.location;
 	}
+	var check_flag = false;
+	$(function() {
+		$("input[name='checkcode']").blur(function(){
+			if (this.value==null||this.value.trim()=="") {
+				$("#code_span").html("");
+				$.messager.alert("警告！","请输入验证码！","warning")
+				return ;
+			}
+			$.post("${pageContext.request.contextPath }/user/validateCodeAjax",{"checkcode":this.value},function (data){
+				if (data) {
+					$("#code_span").html("√").css({color:"green"});
+					check_flag = true;
+				} else {
+					$("#code_span").html("×").css({color:"green"});
+					check_flag = false;
+				}
+			});
+		});
+		
+		/* validatebox */
+		$("input[name='email']").validatebox({ 
+			required: true, 
+			validType: 'email' 
+		}); 
+		
+		  $.extend($.fn.validatebox.defaults.rules, { 
+			minLength: { 
+			validator: function(value, param){ 
+			return value.length >= param[0]; 
+			}, 
+			message: '密码长度至少3位' 
+			} 
+			})  
+		 $.extend($.fn.validatebox.defaults.rules, { 
+			maxLength: { 
+			validator: function(value, param){ 
+			return value.length <= param[0]; 
+			}, 
+			message: '密码长度过长' 
+			} 
+			}) 
+
+		$("input[name='password']").validatebox({ 
+			required: true, 
+			validType: ['minLength[3]','maxLength[12]']
+		}); 
+	});
+	
+	function gologin(){
+		if(check_flag){
+			$("#loginform").submit();
+		}
+	}
 </script>
 </head>
 <body>
@@ -59,12 +129,14 @@ input[type=password] {
 				<div id="lbNormal" class="loginFuncMobile">员工登录</div>
 			</div>
 			<div class="loginForm">
+			<s:actionerror/>
+			<s:fielderror></s:fielderror>
 				<form id="loginform" name="loginform" method="post" class="niceform"
-					action="">
+					action="${pageContext.request.contextPath }/user/login">
 					<div id="idInputLine" class="loginFormIpt showPlaceholder"
 						style="margin-top: 5px;">
-						<input id="loginform:idInput" type="text" name="username"
-							class="loginFormTdIpt" maxlength="50" />
+						<input id="loginform:idInput" type="text" name="email"
+							class="loginFormTdIpt" maxlength="50" "/>
 						<label for="idInput" class="placeholder" id="idPlaceholder">帐号：</label>
 					</div>
 					<div class="forgetPwdLine"></div>
@@ -81,8 +153,9 @@ input[type=password] {
 								name="checkcode" title="请输入验证码" />
 							<img id="loginform:vCode" src="${pageContext.request.contextPath }/validatecode.jsp"
 								onclick="javascript:document.getElementById('loginform:vCode').src='${pageContext.request.contextPath }/validatecode.jsp?'+Math.random();" />
+							<span id="code_span" style="size:10px"></span>
 						</div>
-						<a href="${pageContext.request.contextPath}/page_common_index.action" id="loginform:j_id19" name="loginform:j_id19">
+						<a href="javascript:void(0);" id="loginform:j_id19" name="loginform:j_id19" onclick="gologin();">
 						<span
 							id="loginform:loginBtn" class="btn btn-login"
 							style="margin-top:-36px;">登录</span>

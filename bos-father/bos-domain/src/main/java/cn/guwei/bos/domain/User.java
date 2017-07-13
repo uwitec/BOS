@@ -27,8 +27,8 @@ import org.hibernate.annotations.NamedQuery;
 //@NamedQuery(name="User.findUserByUsernameAndPassword",query="from User where email = ?1 and password = ?2")
 public class User  implements java.io.Serializable {
 
-
-     private Integer id;
+	private static final long serialVersionUID = 1L;
+	private Integer id;
      private String email;
      private String password;
      private BigDecimal salary;

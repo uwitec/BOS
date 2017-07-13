@@ -16,5 +16,5 @@ public interface UserService {
 	public List<User> findAll();
 
 	// 业务 登录
-	public User findUserByUsernameAndPassword(String username, String password);
+	public User findUserByEmailAndPassword(String username, String password);
 }

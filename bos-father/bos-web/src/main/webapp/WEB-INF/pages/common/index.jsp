@@ -130,6 +130,12 @@
 	function showAbout(){
 		$.messager.alert("宅急送 v1.0","设计: yuyang<br/> 管理员邮箱: yuyang@itcast.cn <br/> QQ: 117038615");
 	}
+	
+	//退出登录
+	function logout() {
+		location="${pageContext.request.contextPath}/user/loginOut";
+	}
+	
 </script>
 </head>
 <body class="easyui-layout">
@@ -141,7 +147,8 @@
 		</div>
 		<div id="sessionInfoDiv"
 			style="position: absolute;right: 5px;top:10px;">
-			[<strong>超级管理员</strong>]，欢迎你！您使用[<strong>192.168.1.100</strong>]IP登录！
+			[<strong>超级管理员</strong>]，欢迎${sessionScope.loginUser.email }！
+			您使用[<strong>${pageContext.request.remoteAddr}</strong>]IP登录！
 		</div>
 		<div style="position: absolute; right: 5px; bottom: 10px; ">
 			<a href="javascript:void(0);" class="easyui-menubutton"
@@ -160,7 +167,7 @@
 			<div onclick="editPassword();">修改密码</div>
 			<div onclick="showAbout();">联系管理员</div>
 			<div class="menu-sep"></div>
-			<div onclick="logoutFun();">退出系统</div>
+			<div onclick="logout();">退出系统</div>
 		</div>
 	</div>
 	<div data-options="region:'west',split:true,title:'菜单导航'"

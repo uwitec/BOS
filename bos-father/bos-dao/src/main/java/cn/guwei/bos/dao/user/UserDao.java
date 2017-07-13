@@ -9,15 +9,15 @@ import cn.guwei.bos.domain.User;
 public interface UserDao extends JpaRepository<User, Integer> {
 
 	//关键字  不写语句
-	User findUserByEmailAndPassword(String username, String password);
+//	User findUserByEmailAndPassword(String username, String password);
 
 
-	//jpql语句   直接在方法上 使用注解
-//	@Query("from User where email = ?1 and password = ?2")
+	//jpql语句   直接在方法上 使用注解  (最常用)
+	@Query("from User where email = ?1 and password = ?2")
+	User login(String email, String password);
+
+	// 在目标查询实体类上  用jpql语句 @nameQuery  
 //	User findUserByUsernameAndPassword(String username, String password);
-
-	// 在目标查询实体类上  用jpql语句 @nameQuery  (最常用)
-	User findUserByUsernameAndPassword(String username, String password);
 	
 	//sql查询
 //	@Query(nativeQuery=true,value="select * from t_user where email=? and password=?")
