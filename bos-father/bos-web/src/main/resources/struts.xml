@@ -20,7 +20,7 @@
 			<interceptor-stack name="myStack">
 				<interceptor-ref name="myLoginInterceptor">
 				<!-- 放行的方法 -->
-					<param name="excludeMethods">login,validateCodeAjax</param>				
+					<param name="excludeMethods">login,validateCodeAjax,sendSmsAjax,tocheckCode,updatePwd</param>				
 				</interceptor-ref>
 				<interceptor-ref name="defaultStack"></interceptor-ref>
 			</interceptor-stack>

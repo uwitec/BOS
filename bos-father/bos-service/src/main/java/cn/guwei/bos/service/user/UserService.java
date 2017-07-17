@@ -17,4 +17,8 @@ public interface UserService {
 
 	// 业务 登录
 	public User findUserByEmailAndPassword(String username, String password);
+	
+	public User findUserByTelephone(String telephone);
+
+	public void updatePassword(String telephone, String password);
 }

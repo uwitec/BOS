@@ -10,7 +10,9 @@
   	<param-name>contextConfigLocation</param-name>
   	<param-value>
   		classpath:applicationContext-domain.xml,
+  		classpath:applicationContext-redis.xml,
   		classpath:applicationContext-dao.xml,
+  		classpath:applicationContext-producer.xml,
   		classpath:applicationContext-service.xml,
   		classpath:applicationContext.xml
   	</param-value>

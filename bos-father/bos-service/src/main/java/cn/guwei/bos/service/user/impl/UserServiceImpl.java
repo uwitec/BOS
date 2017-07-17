@@ -48,4 +48,17 @@ public class UserServiceImpl implements UserService {
 				
 	}
 
+	@Override
+	public User findUserByTelephone(String telephone) {
+		System.out.println(telephone);
+		return userDao.findUserByTelephone(telephone);
+	}
+
+	@Override
+	public void updatePassword(String telephone, String password) {
+		System.out.println(telephone);
+		System.out.println(password);
+		userDao.updatePwd(telephone,password);
+	}
+
 }

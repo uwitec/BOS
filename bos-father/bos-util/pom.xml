@@ -6,4 +6,16 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
   <artifactId>bos-util</artifactId>
+  
+  <dependencies>
+  <dependency>
+  	<groupId>cn.guwei.alibaba.dayu</groupId>
+  	<artifactId>dayu-core</artifactId>
+  </dependency>
+
+  <dependency>
+  	<groupId>cn.guwei.alibaba.dayu</groupId>
+  	<artifactId>dayu-sdk-core</artifactId>
+  </dependency>
+  </dependencies>
 </project>

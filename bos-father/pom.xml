@@ -26,10 +26,13 @@
   	  <shiro.version>1.2.2</shiro.version> 
   	  <!-- 二级缓存框架 -->
   	  <ehcache.version>2.6.6</ehcache.version>
-  	  		<!-- redis nosql 内存数据库  -->
-  	  <jedis.version>2.6.2</jedis.version>
+  	  <!-- jedis  内存数据库  -->
+  	  <jedis.version>2.6.0</jedis.version>
   	  <!-- 消息队列 active  mq -->
   	  <activemq.version>5.2.0</activemq.version>
+  	  <xbean.version>3.7</xbean.version>
+  	  <!-- spring data redis -->
+  	  <spring.data.redis>1.4.1.RELEASE</spring.data.redis>
   </properties>
     <dependencyManagement>
   <dependencies>
@@ -67,6 +70,12 @@
 		<version>${spring.datajpa.version}</version>
 	</dependency>
 	
+	<!-- spring data redis -->
+	<dependency>
+  		<groupId>org.springframework.data</groupId>
+  		<artifactId>spring-data-redis</artifactId>
+  		<version>${spring.data.redis}</version>
+  	</dependency>
   	<!-- 日志 -->
   	<dependency>
   		<groupId>org.slf4j</groupId>
@@ -156,55 +165,55 @@
 		</dependency>
     <!-- pinyin4j -->
 <!-- https://mvnrepository.com/artifact/com.belerweb/pinyin4j -->
-				<dependency>
-				    <groupId>com.belerweb</groupId>
-				    <artifactId>pinyin4j</artifactId>
-				    <version>2.5.0</version>
-				</dependency>
+		<dependency>
+		    <groupId>com.belerweb</groupId>
+		    <artifactId>pinyin4j</artifactId>
+		    <version>2.5.0</version>
+		</dependency>
 
 		<!-- fastjson 对象序列化  重写struts2-json-plugin  -->
 <!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
-			<dependency>
-			    <groupId>com.alibaba</groupId>
-			    <artifactId>fastjson</artifactId>
-			    <version>1.2.24</version>
-			</dependency>
+		<dependency>
+		    <groupId>com.alibaba</groupId>
+		    <artifactId>fastjson</artifactId>
+		    <version>1.2.24</version>
+		</dependency>
 <!-- gson -->
 <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
-<dependency>
-    <groupId>com.google.code.gson</groupId>
-    <artifactId>gson</artifactId>
-    <version>2.8.0</version>
-</dependency>
+	<dependency>
+	    <groupId>com.google.code.gson</groupId>
+	    <artifactId>gson</artifactId>
+	    <version>2.8.0</version>
+	</dependency>
 
-		<!-- restful 客户端 -->
-			<!-- 使用CXF RS开发 -->
-  		<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-frontend-jaxrs</artifactId>
-			<version>3.0.1</version>
-		</dependency>
- 	
-		<!-- 使用rs客户端  -->
-		<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-rs-client</artifactId>
-			<version>3.0.1</version>
-		</dependency>
-		
-		<!-- 在CXF扩展提供者，提供转换json接口  -->
-		<dependency>
-			<groupId>org.apache.cxf</groupId>
-			<artifactId>cxf-rt-rs-extension-providers</artifactId>
-			<version>3.0.1</version>
-		</dependency>
+	<!-- restful 客户端 -->
+		<!-- 使用CXF RS开发 -->
+ 		<dependency>
+		<groupId>org.apache.cxf</groupId>
+		<artifactId>cxf-rt-frontend-jaxrs</artifactId>
+		<version>3.0.1</version>
+	</dependency>
+	
+	<!-- 使用rs客户端  -->
+	<dependency>
+		<groupId>org.apache.cxf</groupId>
+		<artifactId>cxf-rt-rs-client</artifactId>
+		<version>3.0.1</version>
+	</dependency>
+	
+	<!-- 在CXF扩展提供者，提供转换json接口  -->
+	<dependency>
+		<groupId>org.apache.cxf</groupId>
+		<artifactId>cxf-rt-rs-extension-providers</artifactId>
+		<version>3.0.1</version>
+	</dependency>
 
-		<!-- cxf 扩展提供者 转换json 默认需求一个工具包  -->
-		<dependency>
-			<groupId>org.codehaus.jettison</groupId>
-			<artifactId>jettison</artifactId>
-			<version>1.3.7</version>
-		</dependency>
+	<!-- cxf 扩展提供者 转换json 默认需求一个工具包  -->
+	<dependency>
+		<groupId>org.codehaus.jettison</groupId>
+		<artifactId>jettison</artifactId>
+		<version>1.3.7</version>
+	</dependency>
 
    <!-- hibernate search -->
      <dependency>
@@ -214,10 +223,10 @@
 		</dependency>
    <!-- ik分词器  中文分词 索引查询 下载jar  手动打包本地仓库 -->
 		 <dependency>
-			 	<groupId>cn.itcast.mavenbos.heima02</groupId>
-			 	<artifactId>heima02ik</artifactId>
-			 	<version>2.2.2</version>
-			 </dependency>
+		 	<groupId>cn.itcast.mavenbos.heima02</groupId>
+		 	<artifactId>heima02ik</artifactId>
+		 	<version>2.2.2</version>
+		 </dependency>
 		<!-- shiro -->
 		<dependency>
 			<groupId>org.apache.shiro</groupId>
@@ -235,13 +244,13 @@
         	<artifactId>itext-asian</artifactId>
         	<version>5.2.0</version>
         </dependency>
-			  <!-- 插件包 -->
-			<!-- https://mvnrepository.com/artifact/org.apache.struts/struts2-jfreechart-plugin -->
-			<dependency>
-			    <groupId>org.apache.struts</groupId>
-			    <artifactId>struts2-jfreechart-plugin</artifactId>
-			    <version>${struts2.version}</version>
-           </dependency>
+		  <!-- 插件包 -->
+		<!-- https://mvnrepository.com/artifact/org.apache.struts/struts2-jfreechart-plugin -->
+		<dependency>
+		    <groupId>org.apache.struts</groupId>
+		    <artifactId>struts2-jfreechart-plugin</artifactId>
+		    <version>${struts2.version}</version>
+          </dependency>
 		
 		<!-- jasper -->
 		<dependency>
@@ -312,8 +321,21 @@
 		<dependency>
 		    <groupId>org.apache.xbean</groupId>
 		    <artifactId>xbean-spring</artifactId>
-		    <version>3.7</version>
+		    <version>${xbean.version}</version>
 		</dependency>
+		
+	<!-- 阿里大于 -->
+	  <dependency>
+	  	<groupId>cn.guwei.alibaba.dayu</groupId>
+	  	<artifactId>dayu-core</artifactId>
+	  	<version>3.2.3</version>
+	  </dependency>
+	
+	  <dependency>
+	  	<groupId>cn.guwei.alibaba.dayu</groupId>
+	  	<artifactId>dayu-sdk-core</artifactId>
+	  	<version>0.1.1-SNAPSHOT</version>
+	  </dependency>
 		
   </dependencies>
   
@@ -401,8 +423,12 @@
   <modules>
   	<module>bos-domain</module>
   	<module>bos-util</module>
+  	<module>bos-redis</module>
+  	<module>bos-mqproducer</module>
   	<module>bos-dao</module>
   	<module>bos-service</module>
   	<module>bos-web</module>
   </modules>
+  	
+
 </project>

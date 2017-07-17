@@ -1,8 +1,8 @@
 package cn.guwei.bos.dao.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import cn.guwei.bos.domain.User;
 
@@ -15,6 +15,13 @@ public interface UserDao extends JpaRepository<User, Integer> {
 	//jpql语句   直接在方法上 使用注解  (最常用)
 	@Query("from User where email = ?1 and password = ?2")
 	User login(String email, String password);
+
+	@Query("from User where telephone = ?1")
+	User findUserByTelephone(String telephone);
+
+	@Modifying
+	@Query("update User set password = ?2 where telephone = ?1")
+	void updatePwd(String telephone, String password);
 
 	// 在目标查询实体类上  用jpql语句 @nameQuery  
 //	User findUserByUsernameAndPassword(String username, String password);

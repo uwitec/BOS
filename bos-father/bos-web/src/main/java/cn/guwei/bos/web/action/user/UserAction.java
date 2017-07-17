@@ -1,6 +1,13 @@
 package cn.guwei.bos.web.action.user;
 
 
+import java.util.concurrent.TimeUnit;
+
+import javax.jms.JMSException;
+import javax.jms.MapMessage;
+import javax.jms.Message;
+import javax.jms.Session;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Namespace;
@@ -8,13 +15,17 @@ import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.jms.JmsException;
+import org.springframework.jms.core.MessageCreator;
 import org.springframework.stereotype.Controller;
 
 import com.opensymphony.xwork2.interceptor.annotations.InputConfig;
 
 import cn.guwei.bos.domain.User;
 import cn.guwei.bos.service.facede.FacedeService;
+import cn.guwei.bos.utils.RandStringUtil;
 import cn.guwei.bos.web.action.BaseAction;
+import redis.clients.jedis.Jedis;
 @Controller("userAction")
 @Scope("prototype")
 @Namespace("/user")
@@ -64,6 +75,87 @@ public class UserAction extends BaseAction<User> {
 		removeSessionAttribute("loginUser");
 		
 		return "loginout";
+	}
+	
+	
+	@Action(value="sendSmsAjax",results={@Result(name="sendSms",type="json")})
+	public String sendSmsAjax(){
+		try {
+			final String code = RandStringUtil.getCode();
+			final String tel = model.getTelephone();
+			//把验证码放入redis
+			redisTemplate.opsForValue().set(tel, code, 1200000, TimeUnit.SECONDS);
+			System.out.println(code+"------"+tel);
+			//把验证码放入消息队列
+			jmsQueueTemplate.send("bos_sms", new MessageCreator() {
+				
+				@Override
+				public Message createMessage(Session session) throws JMSException {
+					MapMessage message = session.createMapMessage();
+					message.setString("telephone", tel);
+					message.setString("code", code);
+					return message;
+				}
+			});
+			push(true);
+			
+		} catch (JmsException e) {
+			e.printStackTrace();
+			push(false);
+		}
+		return "sendSms";
+	}
+	
+	@Action(value="tocheckCode",results={@Result(name="tocheckCode",type="json")})
+	public String tocheckCode(){
+		System.out.println("into----Ajax");
+		
+		String tel = getParameter("telephone");
+		
+		User user = facedeService.getUserService().findUserByTelephone(tel);
+		if (user==null) {
+			System.out.println("user没找到");
+			push(false);
+		} else {
+			String reidscode = redisTemplate.opsForValue().get(tel);
+			//Jedis jedis = new Jedis("localhost",6379);  不能new，要使用同一个对象模板
+			//System.out.println(jedis);
+			//System.out.println(tel);
+			//String reidscode = jedis.get(tel);
+			//System.out.println(reidscode);
+			String code = getParameter("checkcode");
+			//System.out.println(code);
+			if (StringUtils.isNotBlank(reidscode)) {
+				if (reidscode.equals(code)) {
+					push(true);
+					//jedis.del(code);
+					redisTemplate.delete(tel);
+				} else {
+					push(false);
+					System.out.println("验证码不相等");
+				}
+			} else {
+				push(false);
+				System.out.println("code过期");
+			}
+		}
+		return "tocheckCode";
+	}
+	
+	
+	@Action(value="updatePwd",results={@Result(name="updatePwd",type="json")})
+	public String updatePwd(){
+		User user = facedeService.getUserService().findUserByTelephone(getParameter("telephone"));
+		System.out.println(getParameter("telephone")+"------");
+		if (user==null) {
+			push(false);
+			System.out.println("用户没找到");
+		} else {
+			facedeService.getUserService().updatePassword(model.getTelephone(),model.getPassword());
+			push(true);
+			System.out.println("修改成功");
+		}
+		return "updatePwd";
 	}
 	
 }

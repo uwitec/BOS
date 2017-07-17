@@ -145,6 +145,11 @@ input[type=password] {
 							name="password" value="" />
 						<label for="pwdInput" class="placeholder" id="pwdPlaceholder">密码：</label>
 					</div>
+					<div>
+					  <br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						<a href="smspassword.jsp" target="_blank">找回密码?</a>
+					</div>
 					<div class="loginFormIpt loginFormIptWiotTh"
 						style="margin-top:58px;">
 						<div id="codeInputLine" class="loginFormIpt showPlaceholder"
@@ -155,6 +160,7 @@ input[type=password] {
 								onclick="javascript:document.getElementById('loginform:vCode').src='${pageContext.request.contextPath }/validatecode.jsp?'+Math.random();" />
 							<span id="code_span" style="size:10px"></span>
 						</div>
+						
 						<a href="javascript:void(0);" id="loginform:j_id19" name="loginform:j_id19" onclick="gologin();">
 						<span
 							id="loginform:loginBtn" class="btn btn-login"

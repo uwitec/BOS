@@ -12,5 +12,15 @@
   		<artifactId>bos-dao</artifactId>
   		<version>0.0.1-SNAPSHOT</version>
   	</dependency>
+  	<dependency>
+  		<groupId>com.guwei.maven.bos</groupId>
+  		<artifactId>bos-redis</artifactId>
+  		<version>0.0.1-SNAPSHOT</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>com.guwei.maven.bos</groupId>
+  		<artifactId>bos-mqproducer</artifactId>
+  		<version>0.0.1-SNAPSHOT</version>
+  	</dependency>
   </dependencies>
 </project>

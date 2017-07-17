@@ -9,6 +9,10 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts2.ServletActionContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.jms.core.JmsTemplate;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
@@ -17,7 +21,18 @@ import com.opensymphony.xwork2.ModelDriven;
 import cn.guwei.bos.utils.DownLoadUtils;
 
 public abstract class BaseAction<T> extends ActionSupport implements ModelDriven<T>{
-
+	
+	@Autowired
+	protected RedisTemplate<String,String> redisTemplate;
+	
+	@Autowired
+	@Qualifier("jmsQueueTemplate")
+	protected JmsTemplate jmsQueueTemplate;
+	
+	@Autowired
+	@Qualifier("jmsTopicTemplate")
+    protected JmsTemplate jmsTopicTemplate;
+	
 	protected T model;
 	public T getModel(){
 		return model;

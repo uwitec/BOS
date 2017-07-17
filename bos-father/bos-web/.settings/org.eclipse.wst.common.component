@@ -13,6 +13,12 @@
         <dependent-module archiveName="bos-domain-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/bos-domain/bos-domain">
             <dependency-type>uses</dependency-type>
         </dependent-module>
+        <dependent-module archiveName="bos-redis-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/bos-redis/bos-redis">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="bos-mqproducer-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/bos-mqproducer/bos-mqproducer">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <dependent-module archiveName="bos-util-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/bos-util/bos-util">
             <dependency-type>uses</dependency-type>
         </dependent-module>
