@@ -65,6 +65,11 @@
 		<groupId>org.hibernate</groupId>
 		<artifactId>hibernate-tools</artifactId>
 	</dependency>
+	<!-- 防止懒加载@json(serialize = false) -->
+	<dependency>
+  		<groupId>org.apache.struts</groupId>
+  		<artifactId>struts2-json-plugin</artifactId>
+  	</dependency>
   </dependencies>
    
 <!-- 插件  : domain 模块需要添加下述插件 完成 表 实体类的反向生成 需要依赖该插件. -->

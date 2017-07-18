@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import cn.guwei.bos.service.bc.StaffService;
 import cn.guwei.bos.service.bc.StandardService;
 import cn.guwei.bos.service.user.UserService;
 
@@ -26,12 +25,4 @@ public class FacedeService {
 	public StandardService getStandardService() {
 		return standardService;
 	}
-	
-	@Autowired
-	private StaffService staffService;
-
-	public StaffService getStaffService() {
-		return staffService;
-	}
-	
 }

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+    "http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+	<!-- 不用重启服务器 -->
+	<constant name="struts.i18n.reload" value="true" />
+	<constant name="struts.configuration.xml.reload" value="true" />
+	<!-- 表单样式 -->
+	<constant name="struts.ui.theme" value="simple" />
+	<!-- 国际化文件 -->
+	<constant name="struts.custom.i18n.resources" value="messages" />
+	<!-- 动态方法调用 -->
+	<constant name="struts.enable.DynamicMethodInvocation" value="true" />
+
+
+	<package name="mavenbos" extends="json-default">
+		<interceptors>
+			<interceptor name="myLoginInterceptor" class="cn.guwei.bos.web.action.filter.LoginFilter"></interceptor>
+			<interceptor-stack name="myStack">
+				<interceptor-ref name="myLoginInterceptor">
+				<!-- 放行的方法 -->
+					<param name="excludeMethods">login,validateCodeAjax,sendSmsAjax,tocheckCode,updatePwd</param>				
+				</interceptor-ref>
+				<interceptor-ref name="defaultStack"></interceptor-ref>
+			</interceptor-stack>
+		</interceptors>
+		
+		<default-interceptor-ref name="myStack"></default-interceptor-ref>
+		
+		<global-results>
+			<result name="no_login">/login.jsp</result>
+		</global-results>
+		
+		<action name="index">
+			<result>/index.jsp</result>
+		</action>
+		<!-- 需要进行权限控制的页面访问 -->
+		<action name="page_*_*">
+			<result type="dispatcher">/WEB-INF/pages/{1}/{2}.jsp</result>
+		</action>
+	</package>
+</struts>
