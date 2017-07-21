@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 
 import cn.guwei.bos.domain.bc.Region;
 
@@ -16,5 +17,9 @@ public interface RegionService {
 	Region findRegionById(String id);
 
 	Region findRegionByPostcode(String postcode);
+
+	void add(Region model);
+
+	Page<Region> findAll(PageRequest pageRequest, Specification<Region> spec);
 
 }

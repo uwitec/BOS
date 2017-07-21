@@ -88,6 +88,7 @@
 			        }},
 			        {id:'btn-edit',text:'修改',iconCls:'icon-edit',handler:function(){
 			        	$('#editStandardWindow').window("open");
+			        	$("#editStandardForm").form("load",rowData);
 			        }},
 			        {id:'btn-delete',text:'作废',iconCls:'icon-cancel',handler:function(){
 			        	//弃用

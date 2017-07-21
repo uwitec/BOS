@@ -16,7 +16,7 @@
 
 	
 	<package name="mavenbos" extends="json-default">
-	
+	<!--
 	<result-types>
 	  <result-type name="fastJson" class="cn.guwei.bos.web.action.result.FastJsonResult">
 	  </result-type>
@@ -26,18 +26,20 @@
 			<interceptor name="myLoginInterceptor" class="cn.guwei.bos.web.action.filter.LoginFilter"></interceptor>
 			<interceptor-stack name="myStack">
 				<interceptor-ref name="myLoginInterceptor">
-				<!-- 放行的方法 -->
 					<param name="excludeMethods">login,validateCodeAjax,sendSmsAjax,tocheckCode,updatePwd</param>				
 				</interceptor-ref>
 				<interceptor-ref name="defaultStack"></interceptor-ref>
 			</interceptor-stack>
 		</interceptors>
 		
-		<!-- <default-interceptor-ref name="myStack"></default-interceptor-ref> -->
+	    <default-interceptor-ref name="myStack"></default-interceptor-ref>  -->
 		
 		<global-results>
-			<result name="no_login">/login.jsp</result>
+			<!-- <result name="no_login">/login.jsp</result> -->
 			<result name="success" type="json"></result>
+			<result name="pageQuery" type="json">
+				<param name="root">map</param>
+			</result>
 		</global-results>
 		
 		<action name="index">

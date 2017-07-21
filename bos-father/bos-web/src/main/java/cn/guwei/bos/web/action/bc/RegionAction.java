@@ -2,10 +2,17 @@ package cn.guwei.bos.web.action.bc;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
@@ -17,6 +24,7 @@ import org.apache.struts2.convention.annotation.Results;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Controller;
 
 import cn.guwei.bos.domain.bc.Region;
@@ -95,21 +103,46 @@ public class RegionAction extends BaseAction<Region>{
 			throw new RuntimeException("文件上传失败，请重新上传");
 		}
 	}
-	
+	//分页查询
 	@Action(value="pageRegion")
 	public String pageRegion(){
-		PageRequest pageable = new PageRequest(page-1, rows);
-		Page<Region> page = facedeService.getRegionService().findAll(pageable);
-		HashMap<String, Object> map = new HashMap<>();
-		map.put("total", page.getTotalElements());
-		map.put("rows", page.getContent());
-		push(map);
-		return "success";
+		Specification<Region> spec = new Specification<Region>() {
+
+			@Override
+			public Predicate toPredicate(Root<Region> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+				ArrayList<Predicate> list = new ArrayList<>();
+				if (StringUtils.isNotBlank(model.getProvince())) {
+					list.add(cb.like(root.get("province").as(String.class), "%"+model.getProvince()+"%"));
+				}
+				if (StringUtils.isNotBlank(model.getCity())) {
+					list.add(cb.like(root.get("city").as(String.class), "%"+model.getCity()+"%"));
+				}
+				if (StringUtils.isNotBlank(model.getDistrict())) {
+					list.add(cb.like(root.get("district").as(String.class),"%"+ model.getDistrict()+"%"));
+				}
+				if (StringUtils.isNotBlank(model.getShortcode())) {
+					list.add(cb.like(root.get("shortcode").as(String.class),"%"+ model.getShortcode()+"%"));
+				}
+				if (StringUtils.isNotBlank(model.getPostcode())) {
+					list.add(cb.equal(root.get("postcode").as(String.class), model.getPostcode()));
+				}
+				Predicate[] predicates = new Predicate[list.size()];
+				return cb.and(list.toArray(predicates));
+			}
+		};
+		Page<Region> page = facedeService.getRegionService().findAll(getPageRequest(),spec);
+		setPageData(page);
+		return "pageQuery";
 	}
 	
-	/*public String updateRegion(){
-		
-	}*/ 
+	//添加
+	@Action(value="updateRegion",results={@Result(name="updateRegionsuccess",location="/WEB-INF/pages/base/region.jsp")})
+	public String updateRegion(){
+		String citycode = PinYin4jUtils.hanziToPinyin(model.getCity());
+		model.setCitycode(citycode);
+		facedeService.getRegionService().add(model);
+		return "updateRegionsuccess";
+	} 
 	//id唯一性校验
 	@Action(value="validRegionId")
 	public String validRegionId(){
@@ -124,16 +157,18 @@ public class RegionAction extends BaseAction<Region>{
 	//postcode唯一性校验
 	@Action(value="validRegionPostcode")
 	public String validRegionPostcode(){
+		System.out.println("进入ajax校验了 ");
 		Region region = facedeService.getRegionService().findRegionByPostcode(model.getPostcode());
 		if (region==null) {
+			System.out.println(region);
 			push(true);
 		} else {
+			System.out.println(region);
 			push(false);
 		}
 		return "success";
 	}
 	
-
 	private String getHeaderFromArray(String[] strings) {
 		if (strings!=null&&strings.length>0) {
 			StringBuilder sb = new StringBuilder();

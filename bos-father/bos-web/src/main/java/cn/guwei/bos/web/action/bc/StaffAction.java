@@ -46,9 +46,6 @@ public class StaffAction extends BaseAction<Staff>{
 	
 	@Action(value="pageStaffList")
 	public String pageStaffList(){
-		
-		
-		HashMap<String, Object> map = new HashMap<>();
 		try {
 			Specification<Staff> specification = new Specification<Staff>() {
 				
@@ -65,7 +62,6 @@ public class StaffAction extends BaseAction<Staff>{
 					}
 					//haspda
 					if (model.getHaspda()!=null) {
-						System.out.println(model.getHaspda());
 						list.add(cb.equal(root.get("haspda").as(Integer.class), model.getHaspda()));
 					}
 					//standard
@@ -76,15 +72,12 @@ public class StaffAction extends BaseAction<Staff>{
 					return cb.and(list.toArray(ps));
 				}
 			};
-			PageRequest pageable = new PageRequest(page-1, rows);
-			Page<Staff> page = facedeService.getStaffService().findAll(specification,pageable);
-			map.put("total", page.getTotalElements());
-			map.put("rows", page.getContent());
-			push(map);
+			Page<Staff> page = facedeService.getStaffService().findAll(specification,getPageRequest());
+			setPageData(page);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return "success";
+		return "pageQuery";
 	}
 	
 	@Action(value="delBatch")

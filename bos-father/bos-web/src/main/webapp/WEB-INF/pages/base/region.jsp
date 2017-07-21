@@ -35,15 +35,20 @@
 	}
 	
 	function doView(){
-		alert("修改...");
+		$('#addRegionWindow').window("open");
 	}
 	
-	function doDelete(){
-		alert("删除...");
+	function doQuery(){
+		$("#queryRegionWindow").window("open");
 	}
 	
 	//工具栏
-	var toolbar = [ {
+	var toolbar = [{
+		id : 'button-view',	
+		text : '查询',
+		iconCls : 'icon-search',
+		handler : doQuery
+	},{
 		id : 'button-edit',	
 		text : '修改',
 		iconCls : 'icon-edit',
@@ -53,11 +58,6 @@
 		text : '增加',
 		iconCls : 'icon-add',
 		handler : doAdd
-	}, {
-		id : 'button-delete',
-		text : '删除',
-		iconCls : 'icon-cancel',
-		handler : doDelete
 	}, {
 		id : 'button-import',
 		text : '导入',
@@ -130,6 +130,17 @@
 	        resizable:false
 	    });
 		
+		// 查询区域窗口
+		$('#queryRegionWindow').window({
+	        title: '条件查询区域',
+	        width: 400,
+	        modal: true,
+	        shadow: true,
+	        closed: true,
+	        height: 300,
+	        resizable:false
+	    });
+		
 		//一键上传
 		$("#button-import").upload({
 			name:'upload',
@@ -154,73 +165,115 @@
 			}
 		});
 		
+		//搜索框
+		$('#ss').searchbox({
+			searcher : function(value, name) {
+				var j = {};
+				j[name] = value;  //动态设置json的key**
+				$("#grid").datagrid("load", j);
+			},
+			menu : '#mm',
+			prompt : 'Please Input Value'
+		});
+
+		//保存
 		$("#save").click(function() {
-			if($("#updateRegionForm").form("validate")){
+			if ($("#updateRegionForm").form("validate")) {
 				$("#updateRegionForm").submit();
 				$("#updateRegionForm").window("close");
 			}
 		});
+		//条件查询 
+		$("#query").click(function() {
+			var params = {
+				"province" : $("#qprovince").val(),
+				"city" : $("#qcity").val(),
+				"district" : $("qdistrict").val()
+			};
+			$("#grid").datagrid("load", params);
+			$("#queryRegionWindow").window("close");
+		});
 	});
 
-	function doDblClickRow(){
-		alert("双击表格数据...");
+	function doDblClickRow(rowIndex, rowData) {
+		$('#addRegionWindow').window("open");
+		$('#updateRegionForm').form("load", rowData);
 	}
 	
-	function cleardata(){
+	//关闭widow 清除数据
+	function cleardata() {
 		$("#addRegionWindow").form("clear");
 	}
-	
+	//关闭widow 清除数据
+	function cleardata1() {
+		$("#queryRegionWindow").form("clear");
+	}
+
 	//验证
-	$.extend($.fn.validatebox.defaults.rules, { 
-		uniqueId:{
-			validator:function(value,param){
-				var flag;
-				$.ajax({
-					url:'${pageContext.request.contextPath}/Region/validRegionId',
-					type:'POST',
-					data:{id:value},
-					timeout:3000,
-					async:false,
-					success:function(data){
-						if (data) {
-							flag = true;
-						} else {
-							flag = false;
-						}
+	$.extend(
+		$.fn.validatebox.defaults.rules,
+		{
+			uniqueId : {
+				validator : function(value, param) {
+					var flag;
+					$
+							.ajax({
+								url : '${pageContext.request.contextPath}/Region/validRegionId',
+								type : 'POST',
+								data : {
+									id : value
+								},
+								timeout : 3000,
+								async : false,
+								success : function(d) {
+									if (d) {
+										flag = true;
+									} else {
+										flag = false;
+									}
+								}
+							});
+					if (flag) {
+						$("#id").removeClass('validatebox-invalid');
 					}
-				});
-				if(flag){
-					 $("#id").removeClass('validatebox-invalid'); 
-				} 
-				return flag;
+					return flag;
+				},
+				message : '区域编号已存在'
 			},
-			message: '编号已存在'
-		},
-		uniquePostcode:{
-			validator:function(value,param){
-				var flag;
-				$.ajax({
-					url:'${pageContext.request.contextPath}/Region/validRegionPostcode',
-					type:'POST',
-					data:{postcode:value},
-					timeout:3000,
-					async:false,
-					success:function(data){
-						if (data) {
-							flag = true;
-						} else {
-							flag = false;
-						}
-					}
-				});
-				return flag;
-			},
-			message: '邮政编码已存在'
-		}
-	}); 
+			uniquePostcode : {
+				validator : function(value, param) {
+					var flag;
+					$.ajax({
+							url : '${pageContext.request.contextPath}/Region/validRegionPostcode',
+							type : 'POST',
+							data : {
+								postcode : value
+							},
+							timeout : 3000,
+							async : false,
+							success : function(data) {
+								if (data) {
+									flag = true;
+								} else {
+									flag = false;
+								}
+							}
+						});
+					return flag;
+				},
+				message : '邮政编码已存在'
+			}
+		});
 </script>	
 </head>
 <body class="easyui-layout" style="visibility:hidden;">
+	<div region="north" border="false">
+		<input id="ss"></input>
+		<div id="mm" style="width: 120px">
+			<div data-options="name:'shortcode'">地区简码</div>
+			<div data-options="name:'postcode'">邮编</div>
+		</div>
+	</div>
 	<div region="center" border="false">
     	<table id="grid"></table>
 	</div>
@@ -233,7 +286,7 @@
 		</div>
 		
 		<div region="center" style="overflow:auto;padding:5px;" border="false">
-			<form id="updateRegionForm" action="${pageCOntext.request.contextPath }/Region/updateRegion" method="post">
+			<form id="updateRegionForm" action="${pageContext.request.contextPath }/Region/updateRegion" method="post">
 				<table class="table-edit" width="80%" align="center">
 					<tr class="title">
 						<td colspan="2">区域信息</td>
@@ -271,5 +324,37 @@
 			</form>
 		</div>
 	</div>
+	<!-- 条件查询 -->
+	<div class="easyui-window" title="条件查询" id="queryRegionWindow" data-options="onBeforeClose:cleardata1"
+	collapsible="false" minimizable="false" maximizable="false" style="top:20px;left:200px">
+		<div region="north" style="height:31px;overflow:hidden;" split="false" border="false" >
+			<div class="datagrid-toolbar">
+				<a id="query" icon="icon-search" href="#" class="easyui-linkbutton" plain="true" >查询</a>
+			</div>
+		</div>
+		<div region="center" style="overflow:auto;padding:5px;" border="false">
+			<form id="queryRegionForm" action="#" method="post">
+				<table class="table-edit" width="80%" align="center">
+					<tr class="title">
+						<td colspan="2">条件查询</td>
+					</tr>
+					<tr>
+						<td>省份</td>
+						<td>
+						<input type="text" name="province" id="qprovince"/></td>
+					</tr>
+					<tr>
+						<td>城市</td>
+						<td><input type="text" name="city" id="qcity"/></td>
+					</tr>
+					<tr>
+						<td>区（县）</td>
+						<td><input type="text" name="district" id="qdistrict"/></td>
+					</tr>
+				</table>
+			</form>
+		</div>
+	</div>
+
 </body>
 </html>

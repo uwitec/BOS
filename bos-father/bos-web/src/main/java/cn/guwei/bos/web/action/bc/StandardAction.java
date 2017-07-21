@@ -34,17 +34,9 @@ public class StandardAction extends BaseAction<Standard> {
 	
 	@Action(value="listStandard")
 	public String listStandard(){
-		HashMap<String, Object> map = new HashMap<>();
-		try {
-			Pageable pageable = new PageRequest(page-1, rows);
-			Page<Standard> page = facedeService.getStandardService().listStandardPage(pageable);
-			map.put("total", page.getTotalElements());
-			map.put("rows", page.getContent());
-			push(map);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return "success";
+		Page<Standard> page = facedeService.getStandardService().listStandardPage(getPageRequest());
+		setPageData(page);
+		return "pageQuery";
 	}
 	
 	@Action(value="delBatch")

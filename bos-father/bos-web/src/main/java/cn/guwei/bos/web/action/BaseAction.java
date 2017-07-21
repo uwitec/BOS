@@ -4,6 +4,8 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -11,6 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.jms.core.JmsTemplate;
 
@@ -22,6 +26,23 @@ import cn.guwei.bos.service.facede.FacedeService;
 import cn.guwei.bos.utils.DownLoadUtils;
 
 public abstract class BaseAction<T> extends ActionSupport implements ModelDriven<T>{
+	
+	//分页查询请求数据pageable的封装
+	public PageRequest getPageRequest(){
+		return new PageRequest(page-1, rows);
+	}
+	//结果集page
+	private Page<T> pageData;
+	protected void setPageData(Page<T> pageData){
+		this.pageData = pageData;
+	}
+	//将map放到root栈
+	public Map getMap(){
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("total", pageData.getTotalElements());
+		map.put("rows", pageData.getContent());
+		return map;
+	}
 	
 	@Autowired
 	protected FacedeService facedeService;
