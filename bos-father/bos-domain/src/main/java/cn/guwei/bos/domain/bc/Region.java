@@ -12,6 +12,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.apache.struts2.json.annotations.JSON;
 import org.hibernate.annotations.GenericGenerator;
 
 /**
@@ -47,8 +49,14 @@ public class Region  implements java.io.Serializable {
        this.subareas = subareas;
     }
    
-     @GenericGenerator(name="generator", strategy="uuid")@Id @GeneratedValue(generator="generator")
-    
+    @Override
+	public String toString() {
+		return "Region [id=" + id + ", province=" + province + ", city=" + city + ", district=" + district
+				+ ", postcode=" + postcode + "]";
+	}
+
+	//主键生成策略由excel表格提供
+    @Id
     @Column(name="ID", unique=true, nullable=false, length=32)
     public String getId() {
         return this.id;
@@ -112,6 +120,7 @@ public class Region  implements java.io.Serializable {
         this.citycode = citycode;
     }
 @OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY, mappedBy="region")
+@JSON(serialize=false)
     public Set<Subarea> getSubareas() {
         return this.subareas;
     }

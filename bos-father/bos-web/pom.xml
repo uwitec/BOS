@@ -28,10 +28,6 @@
   	</dependency>
   	<dependency>
   		<groupId>org.apache.struts</groupId>
-  		<artifactId>struts2-json-plugin</artifactId>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.apache.struts</groupId>
   		<artifactId>struts2-convention-plugin</artifactId>
   	</dependency>
   	<dependency>
@@ -45,11 +41,26 @@
   		<scope>provided</scope>
   	</dependency>
 
+	<dependency>
+	    <groupId>com.alibaba</groupId>
+	    <artifactId>fastjson</artifactId>
+	</dependency>
+
   	<dependency>
   		<groupId>com.guwei.maven.bos</groupId>
   		<artifactId>bos-util</artifactId>
   		<version>0.0.1-SNAPSHOT</version>
   	</dependency>
+  	
+  	<!-- POI -->
+  	<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+		</dependency>
   </dependencies>
   <build>
      <plugins>

@@ -3,6 +3,7 @@ package cn.guwei.bos.service.bc.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,8 +29,8 @@ public class StaffServiceImpl implements StaffService{
 	}
 
 	@Override
-	public Page<Staff> findAll(PageRequest pageable) {
-		return staffDao.findAll(pageable);
+	public Page<Staff> findAll(Specification<Staff> specification,PageRequest pageable) {
+		return staffDao.findAll(specification,pageable);
 	}
 
 	@Override

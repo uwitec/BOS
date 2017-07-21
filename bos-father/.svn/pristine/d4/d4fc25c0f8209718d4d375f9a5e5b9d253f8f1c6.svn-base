@@ -1,9 +1,0 @@
-package cn.guwei.bos.dao.bc;
-
-import org.springframework.data.jpa.repository.JpaRepository;
-
-import cn.guwei.bos.domain.bc.Standard;
-
-public interface StandardDao extends JpaRepository<Standard, Integer>{
-
-}

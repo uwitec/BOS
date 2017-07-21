@@ -32,7 +32,7 @@ public class StandardAction extends BaseAction<Standard> {
 		return "save";
 	}
 	
-	@Action(value="listStandard",results={@Result(name="listStandard",type="json")})
+	@Action(value="listStandard")
 	public String listStandard(){
 		HashMap<String, Object> map = new HashMap<>();
 		try {
@@ -44,10 +44,10 @@ public class StandardAction extends BaseAction<Standard> {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return "listStandard";
+		return "success";
 	}
 	
-	@Action(value="delBatch",results={@Result(name="delBatch",type="json")})
+	@Action(value="delBatch")
 	public String delBatch(){
 		try{
 			String ids = getParameter("ids");
@@ -62,10 +62,10 @@ public class StandardAction extends BaseAction<Standard> {
 			e.printStackTrace();
 			push(false);
 		}
-		return "delBatch";
+		return "success";
 	}
 	
-	@Action(value="startBatch",results={@Result(name="startBatch",type="json")})
+	@Action(value="startBatch")
 	public String startBatch(){
 		try{
 			String ids = getParameter("ids");
@@ -80,14 +80,14 @@ public class StandardAction extends BaseAction<Standard> {
 			e.printStackTrace();
 			push(false);
 		}
-		return "startBatch";
+		return "success";
 	}
 	
-	@Action(value="listStandardName",results={@Result(name="listStandardName",type="json")})
+	@Action(value="listStandardName")
 	public String listStandardName(){
 		List<Standard> list = facedeService.getStandardService().findAll();
 		push(list);
-		return "listStandardName";
+		return "success";
 	}
 	
 

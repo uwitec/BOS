@@ -33,7 +33,7 @@
 	}
 	
 	function doView(){
-		
+		$('#queryStaffWindow').window("open");
 	}
 	
 	function doDelete(){
@@ -151,7 +151,7 @@
 		align : 'center'
 	}, {
 		field : 'station',
-		title : '所谓单位',
+		title : '所属单位',
 		width : 200,
 		align : 'center'
 	} ] ];
@@ -187,6 +187,15 @@
 	        height: 400,
 	        resizable:false
 	    });
+		// 查询取派员窗口
+		$('#queryStaffWindow').window({
+	        width: 400,
+	        modal: true,
+	        shadow: true,
+	        closed: true,
+	        height: 300,
+	        resizable:false
+	    });
 		
 		//添加下拉列表框
 		$("input[name='standard']").combobox({
@@ -205,6 +214,17 @@
 			}
 		});
 
+		//查询
+		$("#query").click(function() {
+			var params = {"name":$("#qname").val(),"telephone":$("#qtel").val(),
+					"haspda":$("input[name='qhaspda']:checked").val(),"standard":$("#qstandard").combobox("getValue")};
+			$("#grid").datagrid('load',params);
+			$("#queryStaffWindow").window("close");
+		});
+		$("#queryAll").click(function() {
+			$("#grid").datagrid('load');
+			$("#queryStaffWindow").window("close");
+		});
 		
 	});
 	//验证
@@ -219,14 +239,13 @@
 		uniqueId:{
 			validator:function(value,param){
 				var flag;
-				$.agax({
+				$.ajax({
 					url:'${pageContext.request.contextPath}/staff/validStaffId',
 					type:'POST',
 					data:{id:value},
 					timeout:3000,
-					async:'false',
+					async:false,
 					success:function(data){
-						alert(data);
 						if (data) {
 							flag = true;
 						} else {
@@ -254,6 +273,9 @@
 		}
 	}
 	
+	function clearData() {
+		$("#queryStaffWindow").form("clear");
+	}
 </script>	
 </head>
 <body class="easyui-layout" style="visibility:hidden;">
@@ -266,7 +288,6 @@
 				<a id="save" icon="icon-save" href="javascript:void(0);" class="easyui-linkbutton" plain="true" >保存</a>
 			</div>
 		</div>
-		
 		<div region="center" style="overflow:auto;padding:5px;" border="false">
 			<form id="saveStaffForm" action="${pageContext.request.contextPath }/staff/save" method="post">
 				<table class="table-edit" width="80%" align="center">
@@ -276,29 +297,72 @@
 					<!-- TODO 这里完善收派员添加 table -->
 					<tr>
 						<td>取派员编号</td>
-						<td><input type="text" name="id" class="easyui-validatebox" data-options="required:true"/></td>
+						<td><input type="text"  name="id" class="easyui-validatebox" data-options="validType:'uniqueId'"/></td>
 					</tr>
 					<tr>
 						<td>姓名</td>
-						<td><input type="text" name="name" class="easyui-validatebox" data-options="required:true"/></td>
+						<td><input type="text"  name="name" class="easyui-validatebox" data-options="required:true"/></td>
 					</tr>
 					<tr>
 						<td>手机</td>
-						<td><input type="text" name="telephone" class="easyui-validatebox" data-options="required:true,validType:'tel'"/></td>
+						<td><input type="text"  name="telephone" class="easyui-validatebox" data-options="required:true,validType:'tel'"/></td>
 					</tr>
 					<tr>
 						<td>单位</td>
-						<td><input type="text" name="station" class="easyui-validatebox" data-options="required:true"/></td>
+						<td><input type="text" id="qstation" name="station" class="easyui-validatebox" data-options="required:true"/></td>
 					</tr>
 					<tr>
-						<td colspan="2">
-						<input type="checkbox" name="haspda" value="1" />
-						是否有PDA</td>
+						<td>有无PDA</td>
+						<td>
+							<input type="radio" name="haspda" value="1"/>有 
+							<input type="radio" name="haspda" value="0"/>无
+						</td>
 					</tr>
 					<tr>
 						<td>取派标准</td>
 						<td>
-							<input type="text" name="standard" class="easyui-validatebox" data-options="editable:false"/>  
+							<input type="text"  name="standard" class="easyui-validatebox" data-options="editable:false"/>  
+						</td>
+					</tr>
+					</table>
+			</form>
+		</div>
+	</div>
+	<!-- 查询window -->
+	<div class="easyui-window" title="条件查询" id="queryStaffWindow" data-options="onBeforeClose:clearData" 
+	collapsible="false" minimizable="false" maximizable="false" style="top:20px;left:200px">
+		<div region="north" style="height:31px;overflow:hidden;" split="false" border="false" >
+			<div class="datagrid-toolbar">
+				<a id="query" icon="icon-search" href="javascript:void(0);" class="easyui-linkbutton" plain="true" >查询</a>
+				<a id="queryAll" icon="icon-search" href="javascript:void(0);" class="easyui-linkbutton" plain="true" >查询所有</a>
+			</div>
+		</div>
+		<div region="center" style="overflow:auto;padding:5px;" border="false">
+			<form id="queryStaffForm" action="#" method="post">
+				<table class="table-edit" width="80%" align="center">
+					<tr class="title">
+						<td colspan="2">收派员查询</td>
+					</tr>
+					<!-- TODO 这里完善收派员添加 table -->
+					<tr>
+						<td>姓名</td>
+						<td><input type="text" name="name" id="qname"/></td>
+					</tr>
+					<tr>
+						<td>手机</td>
+						<td><input type="text" name="telephone" id="qtel"/></td>
+					</tr>
+					<tr>
+						<td>有无PDA</td>
+						<td>
+							<input type="radio" name="qhaspda" value="1"/>有 
+							<input type="radio" name="qhaspda" value="0"/>无
+						</td>
+					</tr>
+					<tr>
+						<td>取派标准</td>
+						<td>
+							<input type="text" id="qstandard" name="standard" class="easyui-validatebox" data-options="editable:false"/>  
 						</td>
 					</tr>
 					</table>

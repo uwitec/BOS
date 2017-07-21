@@ -22,6 +22,7 @@ import cn.guwei.bos.service.facede.FacedeService;
 import cn.guwei.bos.utils.DownLoadUtils;
 
 public abstract class BaseAction<T> extends ActionSupport implements ModelDriven<T>{
+	
 	@Autowired
 	protected FacedeService facedeService;
 	

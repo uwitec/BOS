@@ -23,9 +23,12 @@
 	src="${pageContext.request.contextPath }/js/easyui/ext/jquery.portal.js"></script>
 <script type="text/javascript"
 	src="${pageContext.request.contextPath }/js/easyui/ext/jquery.cookie.js"></script>
-<script
-	src="${pageContext.request.contextPath }/js/easyui/locale/easyui-lang-zh_CN.js"
-	type="text/javascript"></script>
+<script type="text/javascript"
+	src="${pageContext.request.contextPath }/js/easyui/locale/easyui-lang-zh_CN.js"></script>
+<!-- 一键上传组件js -->
+<script type="text/javascript"
+	src="${pageContext.request.contextPath }/oneclickupload/jquery.ocupload-1.1.2.js"></script>
+	
 <script type="text/javascript">
 	function doAdd(){
 		$('#addRegionWindow').window("open");
@@ -107,10 +110,10 @@
 			border : false,
 			rownumbers : true,
 			striped : true,
-			pageList: [30,50,100],
+			pageList: [3,5,10],
 			pagination : true,
 			toolbar : toolbar,
-			url : "json/region.json",
+			url : "${pageContext.request.contextPath}/region/pageRegion",
 			idField : 'id',
 			columns : columns,
 			onDblClickRow : doDblClickRow
@@ -127,18 +130,102 @@
 	        resizable:false
 	    });
 		
+		//一键上传
+		$("#button-import").upload({
+			name:'upload',
+			action:'${pageContext.request.contextPath}/region/oneclickupload',
+			enctype:'multipart/form-data',
+			onSelect:function(){
+				this.autoSubmit = false;
+				var re = /^.+\.xls|.+\xlsx$/;
+				if (re.test(this.filename())) {
+					this.submit();
+				} else {
+					alert("只能上传xls或xlsx的文件");
+				}
+			},
+			//回调函数
+			onComplete:function(data){
+				if (data) {
+					$.messager.alert("恭喜","上传成功","info");
+				} else {
+					$.messageer.alert("错误","上传失败","error");
+				}
+			}
+		});
+		
+		$("#save").click(function() {
+			if($("#updateRegionForm").form("validate")){
+				$("#updateRegionForm").submit();
+				$("#updateRegionForm").window("close");
+			}
+		});
 	});
 
 	function doDblClickRow(){
 		alert("双击表格数据...");
 	}
+	
+	function cleardata(){
+		$("#addRegionWindow").form("clear");
+	}
+	
+	//验证
+	$.extend($.fn.validatebox.defaults.rules, { 
+		uniqueId:{
+			validator:function(value,param){
+				var flag;
+				$.ajax({
+					url:'${pageContext.request.contextPath}/Region/validRegionId',
+					type:'POST',
+					data:{id:value},
+					timeout:3000,
+					async:false,
+					success:function(data){
+						if (data) {
+							flag = true;
+						} else {
+							flag = false;
+						}
+					}
+				});
+				if(flag){
+					 $("#id").removeClass('validatebox-invalid'); 
+				} 
+				return flag;
+			},
+			message: '编号已存在'
+		},
+		uniquePostcode:{
+			validator:function(value,param){
+				var flag;
+				$.ajax({
+					url:'${pageContext.request.contextPath}/Region/validRegionPostcode',
+					type:'POST',
+					data:{postcode:value},
+					timeout:3000,
+					async:false,
+					success:function(data){
+						if (data) {
+							flag = true;
+						} else {
+							flag = false;
+						}
+					}
+				});
+				return flag;
+			},
+			message: '邮政编码已存在'
+		}
+	}); 
 </script>	
 </head>
 <body class="easyui-layout" style="visibility:hidden;">
 	<div region="center" border="false">
     	<table id="grid"></table>
 	</div>
-	<div class="easyui-window" title="区域添加修改" id="addRegionWindow" collapsible="false" minimizable="false" maximizable="false" style="top:20px;left:200px">
+	<div class="easyui-window" title="区域添加修改" id="addRegionWindow" data-options="onBeforeClose:cleardata"
+	collapsible="false" minimizable="false" maximizable="false" style="top:20px;left:200px">
 		<div region="north" style="height:31px;overflow:hidden;" split="false" border="false" >
 			<div class="datagrid-toolbar">
 				<a id="save" icon="icon-save" href="#" class="easyui-linkbutton" plain="true" >保存</a>
@@ -146,14 +233,19 @@
 		</div>
 		
 		<div region="center" style="overflow:auto;padding:5px;" border="false">
-			<form>
+			<form id="updateRegionForm" action="${pageCOntext.request.contextPath }/Region/updateRegion" method="post">
 				<table class="table-edit" width="80%" align="center">
 					<tr class="title">
 						<td colspan="2">区域信息</td>
 					</tr>
 					<tr>
+						<td>区域编号</td>
+						<td><input type="text" name="id" class="easyui-validatebox" data-options="required:true,validType:'uniqueId'"/></td>
+					</tr>
+					<tr>
 						<td>省</td>
-						<td><input type="text" name="province" class="easyui-validatebox" required="true"/></td>
+						<td>
+						<input type="text" name="province" /></td>
 					</tr>
 					<tr>
 						<td>市</td>
@@ -165,7 +257,7 @@
 					</tr>
 					<tr>
 						<td>邮编</td>
-						<td><input type="text" name="postcode" class="easyui-validatebox" required="true"/></td>
+						<td><input type="text" name="postcode" class="easyui-validatebox" data-options="required:true,validType:'uniquePostcode'"/></td>
 					</tr>
 					<tr>
 						<td>简码</td>
@@ -173,7 +265,7 @@
 					</tr>
 					<tr>
 						<td>城市编码</td>
-						<td><input type="text" name="citycode" class="easyui-validatebox" required="true"/></td>
+						<td><input type="text" name="citycode" /></td>
 					</tr>
 					</table>
 			</form>

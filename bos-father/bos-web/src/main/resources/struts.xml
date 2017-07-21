@@ -14,7 +14,14 @@
 	<constant name="struts.enable.DynamicMethodInvocation" value="true" />
 
 
+	
 	<package name="mavenbos" extends="json-default">
+	
+	<result-types>
+	  <result-type name="fastJson" class="cn.guwei.bos.web.action.result.FastJsonResult">
+	  </result-type>
+	</result-types>
+	
 		<interceptors>
 			<interceptor name="myLoginInterceptor" class="cn.guwei.bos.web.action.filter.LoginFilter"></interceptor>
 			<interceptor-stack name="myStack">
@@ -26,10 +33,11 @@
 			</interceptor-stack>
 		</interceptors>
 		
-		<default-interceptor-ref name="myStack"></default-interceptor-ref>
+		<!-- <default-interceptor-ref name="myStack"></default-interceptor-ref> -->
 		
 		<global-results>
 			<result name="no_login">/login.jsp</result>
+			<result name="success" type="json"></result>
 		</global-results>
 		
 		<action name="index">
