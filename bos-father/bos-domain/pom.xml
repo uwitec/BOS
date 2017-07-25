@@ -65,10 +65,16 @@
 		<groupId>org.hibernate</groupId>
 		<artifactId>hibernate-tools</artifactId>
 	</dependency>
-	<!-- 防止懒加载@json(serialize = false) -->
+	<!-- 防止懒加载@json(serialize = false) 
 	<dependency>
   		<groupId>org.apache.struts</groupId>
   		<artifactId>struts2-json-plugin</artifactId>
+  	</dependency>-->
+  	
+  	<!-- fastjson -->
+  	<dependency>
+  		<groupId>com.alibaba</groupId>
+  		<artifactId>fastjson</artifactId>
   	</dependency>
   </dependencies>
    

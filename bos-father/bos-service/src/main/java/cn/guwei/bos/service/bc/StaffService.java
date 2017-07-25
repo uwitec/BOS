@@ -1,5 +1,7 @@
 package cn.guwei.bos.service.bc;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
@@ -17,5 +19,11 @@ public interface StaffService {
 	void delBatch(String[] arr);
 
 	void startBatch(String[] arr);
+
+	List<Staff> ajaxListInUse();
+
+	Staff findOneById(String id);
+
+	Staff findStaffBytel(String telephone);
 
 }

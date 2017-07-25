@@ -26,30 +26,31 @@
 <script
 	src="${pageContext.request.contextPath }/js/easyui/locale/easyui-lang-zh_CN.js"
 	type="text/javascript"></script>
+<!-- 一键上传组件js -->
+<script type="text/javascript"
+	src="${pageContext.request.contextPath }/oneclickupload/jquery.ocupload-1.1.2.js"></script>
 <script type="text/javascript">
 	function doAdd(){
 		$('#addSubareaWindow').window("open");
 	}
 	
 	function doEdit(){
-		alert("修改...");
+		$("#grid").datagrid("endEdit",editIndex);
 	}
 	
 	function doDelete(){
-		alert("删除...");
+		$("#grid").datagrid("cancelEdit",editIndex);
 	}
 	
 	function doSearch(){
 		$('#searchWindow').window("open");
 	}
 	
-	function doExport(){
-		alert("导出");
+	function doexport(){
+		$("#querySubareaForm").submit();
 	}
 	
-	function doImport(){
-		alert("导入");
-	}
+	var editIndex;
 	
 	//工具栏
 	var toolbar = [ {
@@ -64,24 +65,23 @@
 		handler : doAdd
 	}, {
 		id : 'button-edit',	
-		text : '修改',
+		text : '保存',
 		iconCls : 'icon-edit',
 		handler : doEdit
 	},{
 		id : 'button-delete',
-		text : '删除',
+		text : '取消',
 		iconCls : 'icon-cancel',
 		handler : doDelete
 	},{
 		id : 'button-import',
 		text : '导入',
-		iconCls : 'icon-redo',
-		handler : doImport
+		iconCls : 'icon-redo'
 	},{
 		id : 'button-export',
 		text : '导出',
 		iconCls : 'icon-undo',
-		handler : doExport
+		handler : doexport
 	}];
 	// 定义列
 	var columns = [ [ {
@@ -123,22 +123,53 @@
 		field : 'addresskey',
 		title : '关键字',
 		width : 120,
-		align : 'center'
+		align : 'center',
+		editor:{
+			type:'validatebox',
+			options:{
+				required:true
+			}
+		}
 	}, {
 		field : 'startnum',
 		title : '起始号',
 		width : 100,
-		align : 'center'
+		align : 'center',
+		editor:{
+			type:'validatebox',
+			options:{
+				required:true
+			}
+		}
 	}, {
 		field : 'endnum',
 		title : '终止号',
 		width : 100,
-		align : 'center'
+		align : 'center',
+		editor:{
+			type:'validatebox',
+			options:{
+				required:true
+			}
+		}
 	} , {
 		field : 'single',
 		title : '单双号',
 		width : 100,
-		align : 'center'
+		align : 'center',
+		formatter : function(data,row, index){
+			if(data=="1"){
+				return "单";
+			}else {
+				return "双";
+			}
+		},
+		editor:{
+			type:'validatebox',
+			options:{
+				required:true
+			}
+		}
 	} , {
 		field : 'position',
 		title : '位置',
@@ -151,19 +182,20 @@
 		$("body").css({visibility:"visible"});
 		
 		// 收派标准数据表格
-		$('#grid').datagrid( {
+		$('#grid').datagrid({
 			iconCls : 'icon-forward',
 			fit : true,
 			border : true,
 			rownumbers : true,
 			striped : true,
-			pageList: [30,50,100],
+			pageList: [2,3,4],
 			pagination : true,
 			toolbar : toolbar,
-			url : "json/subarea.json",
+			url : "${pageContext.request.contextPath}/subarea/pageQuery",
 			idField : 'id',
 			columns : columns,
-			onDblClickRow : doDblClickRow
+			onDblClickRow : doDblClickRow,
+			onAfterEdit : afterEdit
 		});
 		
 		// 添加、修改分区
@@ -177,7 +209,7 @@
 	        resizable:false
 	    });
 		
-		// 查询分区
+		//查询分区
 		$('#searchWindow').window({
 	        title: '查询分区',
 	        width: 400,
@@ -187,15 +219,102 @@
 	        height: 400,
 	        resizable:false
 	    });
+		
+		//查询
 		$("#btn").click(function(){
-			alert("执行查询...");
+			var params = $("#querySubareaForm").serializeJson();
+			$("#grid").datagrid('load',params);
+			$('#searchWindow').window("close");
 		});
 		
+		//保存
+		$("#save").click(function(){
+			if($("#saveSubareaForm").form("validate")){
+				$("#saveSubareaForm").submit();
+				$("#addSubareaWindow").window("close");
+			}
+		});
+		
+	 	//一键导入
+		$("#button-import").upload({
+			name:'upload',
+			action:'${pageContext.request.contextPath}/subarea/oneclickupload',
+			enctype:'multipart/form-data',
+			onSelect:function(){
+				this.autoSubmit = false;
+				var re = /^.+\.xls|.+\xlsx$/;
+				if (re.test(this.filename())) {
+					this.submit();
+				} else {
+					alert("只能上传xls或xlsx的文件");
+				}
+			},
+			onComplete:function(data){
+				if (data) {
+					$.messager.alert("恭喜","上传成功","info");
+				} else {
+					$.messageer.alert("错误","上传失败","error");
+				}
+			}
+		}); 
+	
 	});
 
-	function doDblClickRow(){
-		alert("双击表格数据...");
+	function doDblClickRow(rowIndex,rowData ){
+		if(endediting()){
+			$("#grid").datagrid("beginEdit",rowIndex);
+			editIndex = rowIndex;
+		} else {
+			$("#grid").datagrid('selectRow',editIndex);
+		} 
 	}
+	function endediting(){
+		if (editIndex==undefined) {
+			return true;
+		} else if ($("#grid").datagrid("validateRow",editIndex)){
+			$("#grid").datagrid('endEdit',editIndex);
+			editIndex = undefined;
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	//行内编辑
+	function afterEdit(rowIndex, rowData, changes){
+		//rowData 修改的行记录
+		$.post(
+			'${pageContext.request.contextPath}/subarea/updateField',
+			rowData,
+			function(data){
+				if (!data) {
+					alert("修改失败");
+				}
+			})
+	}
+	
+	//清空表格数据
+	function cleardata(){
+		$("#addSubareaWindow").form("clear");
+	}
+	
+	$.fn.serializeJson=function(){  
+        var serializeObj={};  
+        var array=this.serializeArray();  
+        var str=this.serialize();  
+        $(array).each(function(){  
+            if(serializeObj[this.name]){  
+                if($.isArray(serializeObj[this.name])){  
+                    serializeObj[this.name].push(this.value);  
+                }else{  
+                    serializeObj[this.name]=[serializeObj[this.name],this.value];  
+                }  
+            }else{  
+                serializeObj[this.name]=this.value;   
+            }  
+        });  
+        return serializeObj;  
+    }; 
 </script>	
 </head>
 <body class="easyui-layout" style="visibility:hidden;">
@@ -203,7 +322,8 @@
     	<table id="grid"></table>
 	</div>
 	<!-- 添加 修改分区 -->
-	<div class="easyui-window" title="分区添加修改" id="addSubareaWindow" collapsible="false" minimizable="false" maximizable="false" style="top:20px;left:200px">
+	<div class="easyui-window" title="分区添加修改" id="addSubareaWindow" data-options="onBeforeClose:cleardata"
+	collapsible="false" minimizable="false" maximizable="false" style="top:20px;left:200px">
 		<div style="height:31px;overflow:hidden;" split="false" border="false" >
 			<div class="datagrid-toolbar">
 				<a id="save" icon="icon-save" href="#" class="easyui-linkbutton" plain="true" >保存</a>
@@ -211,20 +331,16 @@
 		</div>
 		
 		<div style="overflow:auto;padding:5px;" border="false">
-			<form>
+			<form id="saveSubareaForm" action="${pageContext.request.contextPath }/subarea/save" method="post">
 				<table class="table-edit" width="80%" align="center">
 					<tr class="title">
 						<td colspan="2">分区信息</td>
 					</tr>
 					<tr>
-						<td>分拣编码</td>
-						<td><input type="text" name="id" class="easyui-validatebox" required="true"/></td>
-					</tr>
-					<tr>
 						<td>选择区域</td>
 						<td>
 							<input class="easyui-combobox" name="region.id"  
-    							data-options="valueField:'id',textField:'name',url:'json/standard.json'" />  
+    							data-options="mode:'remote',valueField:'id',textField:'name',url:'${pageContext.request.contextPath }/region/ajaxList'" />  
 						</td>
 					</tr>
 					<tr>
@@ -260,33 +376,33 @@
 	<!-- 查询分区 -->
 	<div class="easyui-window" title="查询分区窗口" id="searchWindow" collapsible="false" minimizable="false" maximizable="false" style="top:20px;left:200px">
 		<div style="overflow:auto;padding:5px;" border="false">
-			<form>
+			<form id="querySubareaForm" action="${pageContext.request.contextPath }/subarea/download" method="post">
 				<table class="table-edit" width="80%" align="center">
 					<tr class="title">
 						<td colspan="2">查询条件</td>
 					</tr>
 					<tr>
 						<td>省</td>
-						<td><input type="text" name="province" class="easyui-validatebox" required="true"/></td>
+						<td><input type="text" id="qp" name="region.province" /></td>
 					</tr>
 					<tr>
 						<td>市</td>
-						<td><input type="text" name="city" class="easyui-validatebox" required="true"/></td>
+						<td><input type="text" id="qc" name="region.city" /></td>
 					</tr>
 					<tr>
 						<td>区（县）</td>
-						<td><input type="text" name="district" class="easyui-validatebox" required="true"/></td>
+						<td><input type="text" id="qd" name="region.district" /></td>
 					</tr>
 					<tr>
 						<td>定区编码</td>
-						<td><input type="text" name="decidedzone.id" class="easyui-validatebox" required="true"/></td>
+						<td><input type="text" id="qdec" name="decidedzone.id" /></td>
 					</tr>
 					<tr>
 						<td>关键字</td>
-						<td><input type="text" name="addresskey" class="easyui-validatebox" required="true"/></td>
+						<td><input type="text" id="qeky" name="addresskey" /></td>
 					</tr>
 					<tr>
-						<td colspan="2"><a id="btn" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'">查询</a> </td>
+						<td colspan="2"><a id="btn" href="javascript:void(0);" class="easyui-linkbutton" data-options="iconCls:'icon-search'">查询</a> </td>
 					</tr>
 				</table>
 			</form>

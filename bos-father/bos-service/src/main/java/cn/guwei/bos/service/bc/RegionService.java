@@ -22,4 +22,10 @@ public interface RegionService {
 
 	Page<Region> findAll(PageRequest pageRequest, Specification<Region> spec);
 
+	List<Region> findAll(String q);
+
+	List<Region> findAll();
+
+	String pageQueryByRedis(PageRequest pageRequest, Specification<Region> spec);
+
 }

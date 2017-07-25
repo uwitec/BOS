@@ -32,7 +32,9 @@
 	}
 	
 	function doEdit(){
-		alert("修改...");
+		$("#addDecidedzoneWindow").window("open");
+		var rowData = $("#grid").datagrid("getSelected")
+		$("#saveForm").form("load",rowData);
 	}
 	
 	function doDelete(){
@@ -91,7 +93,9 @@
 		width : 120,
 		align : 'center',
 		formatter : function(data,row ,index){
-			return row.staff.name;
+			if(row.staff!=null){
+				return row.staff.name ;
+			}
 		}
 	}, {
 		field : 'staff.telephone',
@@ -99,7 +103,9 @@
 		width : 120,
 		align : 'center',
 		formatter : function(data,row ,index){
-			return row.staff.telephone;
+			if(row.staff!=null){
+				return row.staff.telephone ;
+			}
 		}
 	}, {
 		field : 'staff.station',
@@ -107,9 +113,12 @@
 		width : 120,
 		align : 'center',
 		formatter : function(data,row ,index){
-			return row.staff.station;
+			if(row.staff!=null){
+				return row.staff.station ;
+			}
 		}
 	} ] ];
+
 	
 	$(function(){
 		// 先将body隐藏，再显示，不会出现页面刷新效果
@@ -122,10 +131,10 @@
 			border : true,
 			rownumbers : true,
 			striped : true,
-			pageList: [30,50,100],
+			pageList: [5,10,15],
 			pagination : true,
 			toolbar : toolbar,
-			url : "json/decidedzone.json",
+			url : "${pageContext.request.contextPath}/decidedzone/pageQuery",
 			idField : 'id',
 			columns : columns,
 			onDblClickRow : doDblClickRow
@@ -153,13 +162,18 @@
 	        resizable:false
 	    });
 		$("#btn").click(function(){
-			alert("执行查询...");
+			var params = $("#queryForm").serializeJson();
+			$("#grid").datagrid('load',params);
 		});
 		
+		//保存
+		$("#save").click(function() {
+			$("#saveForm").submit();
+			$("#searchWindow").window("close");
+		});
 	});
 
 	function doDblClickRow(){
-		alert("双击表格数据...");
 		$('#association_subarea').datagrid( {
 			fit : true,
 			border : true,
@@ -245,8 +259,29 @@
 				align : 'center'
 			}]]
 		});
-		
 	}
+	
+		$.fn.serializeJson=function(){  
+	        var serializeObj={};  
+	        var array=this.serializeArray();  
+	        var str=this.serialize();  
+	        $(array).each(function(){  
+	            if(serializeObj[this.name]){  
+	                if($.isArray(serializeObj[this.name])){  
+	                    serializeObj[this.name].push(this.value);  
+	                }else{  
+	                    serializeObj[this.name]=[serializeObj[this.name],this.value];  
+	                }  
+	            }else{  
+	                serializeObj[this.name]=this.value;   
+	            }  
+	        });  
+	        return serializeObj;  
+	    }; 
+	    
+	    function clearData(){
+	    	$("#addDecidedzoneWindow").form("clear");
+	    }
 </script>	
 </head>
 <body class="easyui-layout" style="visibility:hidden;">
@@ -267,7 +302,8 @@
 	</div>
 	
 	<!-- 添加 修改分区 -->
-	<div class="easyui-window" title="定区添加修改" id="addDecidedzoneWindow" collapsible="false" minimizable="false" maximizable="false" style="top:20px;left:200px">
+	<div class="easyui-window" title="定区添加修改" id="addDecidedzoneWindow" data-options="onBeforeClose:clearData"  
+	collapsible="false" minimizable="false" maximizable="false" style="top:20px;left:200px">
 		<div style="height:31px;overflow:hidden;" split="false" border="false" >
 			<div class="datagrid-toolbar">
 				<a id="save" icon="icon-save" href="#" class="easyui-linkbutton" plain="true" >保存</a>
@@ -275,7 +311,7 @@
 		</div>
 		
 		<div style="overflow:auto;padding:5px;" border="false">
-			<form>
+			<form id="saveForm" action="${pageContext.request.contextPath }/decidedzone/save" method="post">
 				<table class="table-edit" width="80%" align="center">
 					<tr class="title">
 						<td colspan="2">定区信息</td>
@@ -291,17 +327,18 @@
 					<tr>
 						<td>选择负责人</td>
 						<td>
-							<input class="easyui-combobox" name="region.id"  
-    							data-options="valueField:'id',textField:'name',url:'json/standard.json'" />  
+							<input class="easyui-combobox" name="staff.id"  
+    							data-options="valueField:'id',textField:'name',url:'${pageContext.request.contextPath }/staff/ajaxListInUse'" />  
 						</td>
 					</tr>
 					<tr height="300">
 						<td valign="top">关联分区</td>
 						<td>
-							<table id="subareaGrid"  class="easyui-datagrid" border="false" style="width:300px;height:300px" data-options="url:'json/decidedzone_subarea.json',fitColumns:true,singleSelect:false">
+							<table id="subareaGrid"  class="easyui-datagrid" border="false" style="width:300px;height:300px" 
+							data-options="url:'${pageContext.request.contextPath }/subarea/ajaxListInfo',fitColumns:true,singleSelect:false">
 								<thead>  
 							        <tr>  
-							            <th data-options="field:'id',width:30,checkbox:true">编号</th>  
+							            <th data-options="field:'sid',width:30,checkbox:true">编号</th>  
 							            <th data-options="field:'addresskey',width:150">关键字</th>  
 							            <th data-options="field:'position',width:200,align:'right'">位置</th>  
 							        </tr>  
@@ -316,25 +353,32 @@
 	<!-- 查询定区 -->
 	<div class="easyui-window" title="查询定区窗口" id="searchWindow" collapsible="false" minimizable="false" maximizable="false" style="top:20px;left:200px">
 		<div style="overflow:auto;padding:5px;" border="false">
-			<form>
+			<form id="queryForm">
 				<table class="table-edit" width="80%" align="center">
 					<tr class="title">
 						<td colspan="2">查询条件</td>
 					</tr>
 					<tr>
 						<td>定区编码</td>
-						<td><input type="text" name="id" class="easyui-validatebox" required="true"/></td>
+						<td><input type="text" name="id" /></td>
 					</tr>
 					<tr>
 						<td>所属单位</td>
-						<td><input type="text" name="staff.station" class="easyui-validatebox" required="true"/></td>
+						<td><input type="text" name="staff.station" /></td>
 					</tr>
 					<tr>
 						<td>是否关联分区</td>
-						<td><input type="text" name="subareaName" class="easyui-validatebox" required="true"/></td>
+						<td>
+						<select id="cc" class="easyui-combobox" name="isAccsocitionSubarea" >
+						<option value="">--请选择--</option>
+						<option value="1">是</option>
+						<option value="0">否</option>
+						</select> 
+						</td>
 					</tr>
 					<tr>
-						<td colspan="2"><a id="btn" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'">查询</a> </td>
+						<td colspan="2">
+						<a id="btn" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'">查询</a> </td>
 					</tr>
 				</table>
 			</form>

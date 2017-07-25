@@ -236,13 +236,13 @@
 			}, 
 			message: '手机格式不正确' 
 		},
-		uniqueId:{
+		uniquetel:{
 			validator:function(value,param){
 				var flag;
 				$.ajax({
-					url:'${pageContext.request.contextPath}/staff/validStaffId',
+					url:'${pageContext.request.contextPath}/staff/validStafftel?id='+$("#staffid").val(),
 					type:'POST',
-					data:{id:value},
+					data:{telephone:value},
 					timeout:3000,
 					async:false,
 					success:function(data){
@@ -253,17 +253,15 @@
 						}
 					}
 				});
-				if(flag){
-					 $("#id").removeClass('validatebox-invalid'); 
-				} 
 				return flag;
 			},
-			message: '编号已存在'
+			message: '手机号已被注册'
 		}
 	}); 
 
-	function doDblClickRow(){
-		alert("双击表格数据...");
+	function doDblClickRow(rowIndex,rowData){
+		$("#addStaffWindow").window("open");
+		$("#saveStaffForm").form("load",rowData);
 	}
 	
 	
@@ -295,17 +293,18 @@
 						<td colspan="2">收派员信息</td>
 					</tr>
 					<!-- TODO 这里完善收派员添加 table -->
-					<tr>
+					<!-- <tr>
 						<td>取派员编号</td>
 						<td><input type="text"  name="id" class="easyui-validatebox" data-options="validType:'uniqueId'"/></td>
-					</tr>
+					</tr> -->
 					<tr>
 						<td>姓名</td>
-						<td><input type="text"  name="name" class="easyui-validatebox" data-options="required:true"/></td>
+						<td><input type="hidden" name="id" id="staffid">
+						<input type="text"  name="name" class="easyui-validatebox" data-options="required:true"/></td>
 					</tr>
 					<tr>
 						<td>手机</td>
-						<td><input type="text"  name="telephone" class="easyui-validatebox" data-options="required:true,validType:'tel'"/></td>
+						<td><input type="text"  name="telephone" class="easyui-validatebox" data-options="required:true,validType:'uniquetel'"/></td>
 					</tr>
 					<tr>
 						<td>单位</td>

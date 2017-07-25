@@ -2,6 +2,7 @@ package cn.guwei.bos.web.action.bc;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -27,24 +28,33 @@ import cn.guwei.bos.web.action.BaseAction;
 @ParentPackage("mavenbos")
 public class StaffAction extends BaseAction<Staff>{
 	
-	@Action(value="save",results={@Result(name="saveSuccess",location="/WEB-INF/pages/base/staff.jsp")})
+	@Action(value="save",results={
+			@Result(name="saveSuccess",location="/WEB-INF/pages/base/staff.jsp")})
 	public String save(){
 		facedeService.getStaffService().saveStaff(model);
 		return "saveSuccess";
 	}
 
-	@Action(value="validStaffId")
-	public String validStaffId(){
-		Staff staff = facedeService.getStaffService().findStaffById(model.getId());
-		if (staff==null) {
+	@Action(value="validStafftel")
+	public String validStafftel(){
+		System.out.println(model.getId());
+		Staff s = facedeService.getStaffService().findOneById(model.getId());
+		if (model.getTelephone().equals(s.getTelephone())) {
 			push(true);
 		} else {
-			push(false);
+			Staff staff = facedeService.getStaffService().findStaffBytel(model.getTelephone());
+			if (staff==null) {
+				push(true);
+			} else {
+				push(false);
+			}
 		}
+		
 		return "success";
 	}
 	
-	@Action(value="pageStaffList")
+	@Action(value="pageStaffList",results={
+			@Result(name="pageQuery",type="fastJson",params={"root","map"})})
 	public String pageStaffList(){
 		try {
 			Specification<Staff> specification = new Specification<Staff>() {
@@ -116,4 +126,11 @@ public class StaffAction extends BaseAction<Staff>{
 	}
 	
 	
+	@Action(value="ajaxListInUse",results={
+			@Result(name="serName",type="fastJson",params={"includeProperties","id,name"})})
+	public String ajaxListInUse(){
+		List<Staff> staffs = facedeService.getStaffService().ajaxListInUse();
+		push(staffs);
+		return "serName";
+	}
 }

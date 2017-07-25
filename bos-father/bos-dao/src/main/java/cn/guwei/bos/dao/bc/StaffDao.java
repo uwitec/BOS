@@ -1,5 +1,7 @@
 package cn.guwei.bos.dao.bc;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
@@ -16,6 +18,12 @@ public interface StaffDao extends JpaRepository<Staff, String>,JpaSpecificationE
 	@Modifying
 	@Query("update Staff set deltag = 1 where id = ?1")
 	void startBatch(String arr);
+
+	@Query("from Staff where deltag = 1")
+	List<Staff> findAllInUse();
+
+	Staff findByTelephone(String telephone);
+
 
 
 }

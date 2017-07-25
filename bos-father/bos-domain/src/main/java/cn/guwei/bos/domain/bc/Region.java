@@ -4,17 +4,17 @@ package cn.guwei.bos.domain.bc;
 
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
-import org.apache.struts2.json.annotations.JSON;
-import org.hibernate.annotations.GenericGenerator;
+import com.alibaba.fastjson.annotation.JSONField;
 
 /**
  * 地区
@@ -119,17 +119,28 @@ public class Region  implements java.io.Serializable {
     public void setCitycode(String citycode) {
         this.citycode = citycode;
     }
-@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY, mappedBy="region")
-@JSON(serialize=false)
-    public Set<Subarea> getSubareas() {
-        return this.subareas;
-    }
-    
-    public void setSubareas(Set<Subarea> subareas) {
-        this.subareas = subareas;
-    }
+//@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY, mappedBy="region")
+////@JSON(serialize=false)
+////@JSONField(serialize=false)
+//    public Set<Subarea> getSubareas() {
+//        return this.subareas;
+//    }
+//    
+//    public void setSubareas(Set<Subarea> subareas) {
+//        this.subareas = subareas;
+//    }
 
-
+@Transient
+    public String getName(){
+		if (this.getProvince()==null) {
+			return null;
+		}
+    	if (this.getProvince().equals(this.getCity())) {
+			return this.province+this.getDistrict();
+		} else {
+			return this.province+this.getCity()+this.getDistrict();
+		}
+    }
 
 
 }

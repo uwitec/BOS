@@ -58,7 +58,12 @@
 						$("#addStandardForm").submit();
 					}
 				});
-				
+				$("#edit").click(function(){
+					var flag = $("#editStandardForm").form("validate");
+					if (flag) {
+						$("#editStandardForm").submit();
+					}
+				});
 			});
 			
 			
@@ -88,7 +93,7 @@
 			        }},
 			        {id:'btn-edit',text:'修改',iconCls:'icon-edit',handler:function(){
 			        	$('#editStandardWindow').window("open");
-			        	$("#editStandardForm").form("load",rowData);
+			        	$("#editStandardForm").form("load",$("#grid").datagrid("getSelected"));
 			        }},
 			        {id:'btn-delete',text:'作废',iconCls:'icon-cancel',handler:function(){
 			        	//弃用
@@ -236,7 +241,7 @@
 					<tr >
 						<td >最小长度(cm)</td>
 						<td>
-							<input type="text" name="minlength" class="easyui-numberbox" data-options="min:10,required:true">
+							<input type="text" name="minlength" class="easyui-numberbox" data-options="min:1,required:true">
 						</td>
 					</tr>
 					<tr>
@@ -251,7 +256,7 @@
 		</div>
 		<div region="sourth" style="height: 31px;overflow: hidden;">
 			<div class="datagrid-toolbar">
-				<a id="save" icon="icon-save" href="#" class="easyui-linkbutton" plain=true >修改</a>
+				<a id="edit" icon="icon-save" href="#" class="easyui-linkbutton" plain=true >修改</a>
 			</div>
 		</div>
 	</div>

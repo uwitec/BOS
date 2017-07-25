@@ -10,7 +10,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.annotation.Transient;
+
+import com.alibaba.fastjson.annotation.JSONField;
 
 /**
  * 分区
@@ -46,7 +50,7 @@ public class Subarea  implements java.io.Serializable {
     }
    
      @GenericGenerator(name="generator", strategy="uuid")@Id @GeneratedValue(generator="generator")
-    
+    @JSONField(name="sid")
     @Column(name="ID", unique=true, nullable=false, length=32)
     public String getId() {
         return this.id;
@@ -55,8 +59,16 @@ public class Subarea  implements java.io.Serializable {
     public void setId(String id) {
         this.id = id;
     }
+    
+//    @Transient
+//    public String getSid(){
+//    	return this.id;
+//    }
+    
 @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="DECIDEDZONE_ID")
+//@JSON(serialize=false)
+@JSONField(serialize=false)
     public Decidedzone getDecidedzone() {
         return this.decidedzone;
     }

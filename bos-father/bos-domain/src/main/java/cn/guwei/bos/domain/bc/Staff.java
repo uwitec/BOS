@@ -4,6 +4,7 @@ package cn.guwei.bos.domain.bc;
 
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,8 +15,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import org.apache.struts2.json.annotations.JSON;
 import org.hibernate.annotations.GenericGenerator;
+
+import com.alibaba.fastjson.annotation.JSONField;
 
 /**
  * 取派员
@@ -120,7 +122,8 @@ public class Staff  implements java.io.Serializable {
         this.standard = standard;
     }
 @OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY, mappedBy="staff")
-@JSON(serialize=false)
+//@JSON(serialize=false)
+@JSONField(serialize=false)
     public Set<Decidedzone> getDecidedzones() {
         return this.decidedzones;
     }

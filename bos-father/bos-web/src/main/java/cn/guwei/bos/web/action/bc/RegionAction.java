@@ -2,15 +2,15 @@ package cn.guwei.bos.web.action.bc;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.lang.reflect.Array;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -20,15 +20,12 @@ import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Namespace;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
-import org.apache.struts2.convention.annotation.Results;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Controller;
 
 import cn.guwei.bos.domain.bc.Region;
-import cn.guwei.bos.domain.bc.Staff;
 import cn.guwei.bos.utils.PinYin4jUtils;
 import cn.guwei.bos.web.action.BaseAction;
 
@@ -104,7 +101,7 @@ public class RegionAction extends BaseAction<Region>{
 		}
 	}
 	//分页查询
-	@Action(value="pageRegion")
+	@Action(value="pageRegionByRedis")
 	public String pageRegion(){
 		Specification<Region> spec = new Specification<Region>() {
 
@@ -127,16 +124,32 @@ public class RegionAction extends BaseAction<Region>{
 					list.add(cb.equal(root.get("postcode").as(String.class), model.getPostcode()));
 				}
 				Predicate[] predicates = new Predicate[list.size()];
+				
 				return cb.and(list.toArray(predicates));
 			}
 		};
-		Page<Region> page = facedeService.getRegionService().findAll(getPageRequest(),spec);
-		setPageData(page);
-		return "pageQuery";
+//		if (spec.) {
+			String pageString = facedeService.getRegionService().pageQueryByRedis(getPageRequest(),spec);
+			try {
+				HttpServletResponse response = getResponse();
+				response.setContentType("text/json;charset=utf-8");
+				response.getWriter().println(pageString);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return NONE;
+//		} else {
+//			Page<Region> page = facedeService.getRegionService().findAll(getPageRequest(),spec);
+//			setPageData(page);
+//			return "pageQuery";
+//		}
 	}
 	
+	
+	
 	//添加
-	@Action(value="updateRegion",results={@Result(name="updateRegionsuccess",location="/WEB-INF/pages/base/region.jsp")})
+	@Action(value="updateRegion",results={
+			@Result(name="updateRegionsuccess",location="/WEB-INF/pages/base/region.jsp")})
 	public String updateRegion(){
 		String citycode = PinYin4jUtils.hanziToPinyin(model.getCity());
 		model.setCitycode(citycode);
@@ -146,27 +159,49 @@ public class RegionAction extends BaseAction<Region>{
 	//id唯一性校验
 	@Action(value="validRegionId")
 	public String validRegionId(){
-		Region region = facedeService.getRegionService().findRegionById(model.getId());
-		if (region==null) {
+		Region r = facedeService.getRegionService().findRegionByPostcode(model.getPostcode());
+		if (r.getId().equals(model.getId())) {
 			push(true);
 		} else {
-			push(false);
+			Region region = facedeService.getRegionService().findRegionById(model.getId());
+			if (region==null) {
+				push(true);
+			} else {
+				push(false);
+			}
 		}
 		return "success";
 	}
 	//postcode唯一性校验
 	@Action(value="validRegionPostcode")
 	public String validRegionPostcode(){
-		System.out.println("进入ajax校验了 ");
-		Region region = facedeService.getRegionService().findRegionByPostcode(model.getPostcode());
-		if (region==null) {
-			System.out.println(region);
+		Region region = facedeService.getRegionService().findRegionById(model.getId());
+		if (region.getPostcode()==model.getPostcode()) {
 			push(true);
-		} else {
-			System.out.println(region);
-			push(false);
+		}else {
+			Region r = facedeService.getRegionService().findRegionByPostcode(model.getPostcode());
+			if (r==null) {
+				push(true);
+			} else {
+				push(false);
+			}
 		}
+		
 		return "success";
+	}
+	
+	@Action(value="ajaxList",results={
+			@Result(name="serPCD",type="fastJson",params={"includeProperties","id,name"})})
+	public String ajaxList(){
+		String q = getParameter("q");
+		List<Region> list;
+		if (StringUtils.isNotBlank(q)) {
+			list = facedeService.getRegionService().findAll(q);
+		} else {
+			list = facedeService.getRegionService().findAll();
+		}
+		push(list);
+		return "serPCD";
 	}
 	
 	private String getHeaderFromArray(String[] strings) {

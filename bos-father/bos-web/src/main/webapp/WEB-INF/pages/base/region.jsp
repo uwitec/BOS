@@ -36,6 +36,8 @@
 	
 	function doView(){
 		$('#addRegionWindow').window("open");
+		var data = $('#grid').datagrid('getSelected');
+		$('#updateRegionForm').form("load", data);
 	}
 	
 	function doQuery(){
@@ -113,7 +115,7 @@
 			pageList: [3,5,10],
 			pagination : true,
 			toolbar : toolbar,
-			url : "${pageContext.request.contextPath}/region/pageRegion",
+			url : "${pageContext.request.contextPath}/region/pageRegionByRedis",
 			idField : 'id',
 			columns : columns,
 			onDblClickRow : doDblClickRow
@@ -155,7 +157,6 @@
 					alert("只能上传xls或xlsx的文件");
 				}
 			},
-			//回调函数
 			onComplete:function(data){
 				if (data) {
 					$.messager.alert("恭喜","上传成功","info");
@@ -218,7 +219,7 @@
 					var flag;
 					$
 							.ajax({
-								url : '${pageContext.request.contextPath}/Region/validRegionId',
+								url : '${pageContext.request.contextPath}/region/validRegionId',
 								type : 'POST',
 								data : {
 									id : value
@@ -244,7 +245,7 @@
 				validator : function(value, param) {
 					var flag;
 					$.ajax({
-							url : '${pageContext.request.contextPath}/Region/validRegionPostcode',
+							url : '${pageContext.request.contextPath}/region/validRegionPostcode',
 							type : 'POST',
 							data : {
 								postcode : value

@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts2.StrutsStatics;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.serializer.SimplePropertyPreFilter;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;
@@ -18,13 +19,14 @@ import com.opensymphony.xwork2.util.ValueStack;
 //第一步:自定义结果集编码如下
 
 @SuppressWarnings("all")
+
 public class FastJsonResult implements Result {
 
+	private String root;// 获取值栈 需要序列化json的对象
 	public void setRoot(String root) {
 		this.root = root;
 	}
 
-	private String root;// 获取值栈 需要序列化json的对象
 	protected Set<String> excludeProperties = Collections.emptySet();// 不需要序列化属性名添加
 																		// 的集合
 	protected Set<String> includeProperties = Collections.emptySet();// 需要序列化json字符串的集合添加
@@ -71,7 +73,7 @@ public class FastJsonResult implements Result {
 					filter.getExcludes().add(ex);// 不需要序列化json字符串的集合添加
 				}
 			}
-			String jsonString = JSON.toJSONString(rootObject, filter);// 阿里提供的序列化json字符串对象
+			String jsonString = JSON.toJSONString(rootObject, filter,SerializerFeature.DisableCircularReferenceDetect);// 阿里提供的序列化json字符串对象
 																		// 使用构造方法
 			// 构造方法将需要序列化的对象 以及相关自定义序列化Json的配置filter
 			System.out.println("------fastjson 序列化的字段 = " + jsonString + "----序列化信息ok!");
