@@ -36,4 +36,10 @@ public class CustomerDaoImpl extends HibernateDaoSupport implements CustomerDao 
 		getSession().createQuery(" update Customers set decidedzoneId = null where decidedzoneId = ? ").setParameter(0, decidedzoneId).executeUpdate();
 	}
 
+	@Override
+	public List<Customers> findCustomerByDid(String did) {
+		List<Customers> list = getSession().createQuery(" from Customers where decidedzoneId = ?").setParameter(0, did).list();
+		return list;
+	}
+
 }

@@ -51,8 +51,8 @@
 			$.messager.alert("警告！","请先选择定区","warning")
 			return ;
 		} else {
-			$("#noassociationSelect")[0].length=0;
-			$("#associationSelect").empty;
+			//$("#noassociationSelect")[0].length=0;
+			//$("#associationSelect")[0].length=0;
 			$('#customerWindow').window('open');
 			$.post(
 				'${pageContext.request.contextPath}/decidedzone/getnoassociation',
@@ -203,7 +203,7 @@
 		$("#toLeft").click(function(){
 			$("#noassociationSelect").append($("#associationSelect option:selected"))
 		});
-		
+		//关联定区和客户
 		$("#associationBtn").click(function(){
 			var arr = $("#grid").datagrid("getSelections");
 			$("#customerDecidedZoneId").val(arr[0].id);
@@ -214,14 +214,15 @@
 	});
 
 	function doDblClickRow(){
+		var row = $("#grid").datagrid("getSelected");
 		$('#association_subarea').datagrid( {
 			fit : true,
 			border : true,
 			rownumbers : true,
 			striped : true,
-			url : "json/association_subarea.json",
+			url : "${pageContext.request.contextPath}/subarea/querySubareaBydid?decidedzoneId="+row.id,
 			columns : [ [{
-				field : 'id',
+				field : 'sid',
 				title : '分拣编号',
 				width : 120,
 				align : 'center'
@@ -281,7 +282,7 @@
 			border : true,
 			rownumbers : true,
 			striped : true,
-			url : "json/association_customer.json",
+			url : "${pageContext.request.contextPath}/decidedzone/findCustomer?decidedzoneId="+row.id,
 			columns : [[{
 				field : 'id',
 				title : '客户编号',

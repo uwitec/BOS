@@ -19,4 +19,6 @@ public interface SubareaDao extends JpaRepository<Subarea, String>,JpaSpecificat
 	@Query("update Subarea set decidedzone =?2 where id = ?1")
 	void addDecidedzoneId(String id, Decidedzone model);
 
+	List<Subarea> findByDecidedzone(Decidedzone decidedzone);
+
 }

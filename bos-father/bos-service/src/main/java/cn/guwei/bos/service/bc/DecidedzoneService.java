@@ -23,4 +23,6 @@ public interface DecidedzoneService extends BaseInterface{
 
 	void assignC2D(String[] customerIds, String id);
 
+	List<Customers> findCustomer(String did);
+
 }

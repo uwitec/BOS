@@ -28,6 +28,10 @@ public class CustomerServiceImpl implements CustomerService {
 	@Override
 	public void assignedAssociationCD(String customerId, String decidedzoneId) {
 		customerDao.cancleAssociationCD(decidedzoneId);
+		if ("none".equalsIgnoreCase(customerId)) {
+			System.out.println("no 客户--");
+			return; 
+		}
 		//isNoneBlank 
 		if (StringUtils.isNoneBlank(customerId)) {
 			String customerIds[] = customerId.split(",");
@@ -35,6 +39,11 @@ public class CustomerServiceImpl implements CustomerService {
 				customerDao.assignedAssociationCD(id, decidedzoneId);
 			}
 		}
+	}
+
+	@Override
+	public List<Customers> findCustomerByDid(String did) {
+		return customerDao.findCustomerByDid(did);
 	}
 
 

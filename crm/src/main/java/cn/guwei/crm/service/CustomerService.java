@@ -11,6 +11,7 @@ import javax.ws.rs.Produces;
 
 import cn.guwei.crm.domain.Customers;
 
+
 /**crm所提供服务：
  * 1、查询未被定区关联的客户
  * 2、查询已被定区关联的客户
@@ -34,4 +35,9 @@ public interface CustomerService {
 	@Consumes({ "application/xml", "application/json" })
 	public void assignedAssociationCD(@PathParam("customerId")String customerId,@PathParam("decidedzoneId")String decidedzoneId);
 	
+	@GET
+	@Path("/customer/findCustomerByDid/{decidedzoneId}")
+	@Consumes({ "application/xml", "application/json" })
+	@Produces({ "application/xml", "application/json" })
+	public List<Customers> findCustomerByDid(@PathParam("decidedzoneId")String did);
 }

@@ -85,23 +85,21 @@
 	}];
 	// 定义列
 	var columns = [ [ {
-		field : 'id',
-		checkbox : true,
-	}, {
-		field : 'showid',
+		field : 'sid',
 		title : '分拣编号',
 		width : 120,
-		align : 'center',
-		formatter : function(data,row ,index){
-			return row.id;
-		}
+		align : 'center'
+		
 	},{
 		field : 'province',
 		title : '省',
 		width : 120,
 		align : 'center',
 		formatter : function(data,row ,index){
+			if(row.region!=null){
 			return row.region.province;
+				
+			}
 		}
 	}, {
 		field : 'city',
@@ -109,7 +107,10 @@
 		width : 120,
 		align : 'center',
 		formatter : function(data,row ,index){
+			if(row.region!=null){
+				
 			return row.region.city;
+			}
 		}
 	}, {
 		field : 'district',
@@ -117,7 +118,10 @@
 		width : 120,
 		align : 'center',
 		formatter : function(data,row ,index){
+			if(row.region!=null){
 			return row.region.district;
+				
+			}
 		}
 	}, {
 		field : 'addresskey',

@@ -101,8 +101,8 @@ public class RegionAction extends BaseAction<Region>{
 		}
 	}
 	//分页查询
-	@Action(value="pageRegionByRedis")
-	public String pageRegion(){
+	@Action(value="pageQueryByRedis")
+	public String pageQueryByRedis(){
 		Specification<Region> spec = new Specification<Region>() {
 
 			@Override
@@ -128,21 +128,15 @@ public class RegionAction extends BaseAction<Region>{
 				return cb.and(list.toArray(predicates));
 			}
 		};
-//		if (spec.) {
-			String pageString = facedeService.getRegionService().pageQueryByRedis(getPageRequest(),spec);
-			try {
-				HttpServletResponse response = getResponse();
-				response.setContentType("text/json;charset=utf-8");
-				response.getWriter().println(pageString);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return NONE;
-//		} else {
-//			Page<Region> page = facedeService.getRegionService().findAll(getPageRequest(),spec);
-//			setPageData(page);
-//			return "pageQuery";
-//		}
+		String pageString = facedeService.getRegionService().pageQueryByRedis(getPageRequest(),spec);
+		try {
+			HttpServletResponse response = getResponse();
+			response.setContentType("text/json;charset=utf-8");
+			response.getWriter().println(pageString);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return NONE;
 	}
 	
 	

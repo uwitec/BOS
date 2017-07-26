@@ -15,4 +15,6 @@ public interface CustomerDao {
 	public void assignedAssociationCD(@PathParam("customerId")String customerId,@PathParam("decidedzoneId")String decidedzoneId);
 	
 	public void cancleAssociationCD(String decidedzoneId);
+
+	public List<Customers> findCustomerByDid(String did);
 }

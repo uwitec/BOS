@@ -29,6 +29,7 @@
 <script type="text/javascript">
 	$(function(){
 		$("body").css({visibility:"visible"});
+		load(0,province);
 		
 		// 对save按钮条件 点击事件
 		$('#save').click(function(){
@@ -37,7 +38,24 @@
 				$('#noticebillForm').submit();
 			}
 		});
+		
 	});
+	//三级联动
+	function load(pid,target){
+		target.length=1;
+		county.length=1;
+		if (pid=="none") {
+			return;
+		}
+		$.post(
+			'${pageContext.request.contextPath}/city/load',
+			{"pid":pid},
+			function(data){  //[{},{}]
+				$(data).each(function(){
+					$(target).append("<option value='"+this.id+"'>"+this.name+"</option>");
+				});
+			});
+	}
 </script>
 </head>
 <body class="easyui-layout" style="visibility:hidden;">
@@ -93,8 +111,18 @@
 				</tr>
 				<tr>
 					<td>取件地址</td>
-					<td colspan="3"><input type="text" class="easyui-validatebox" name="pickaddress"
-						required="true" size="144"/></td>
+					<td colspan="3">
+					<select id="province" name="province" onchange="load(value,city)">
+						<option value="none">--请选择省份--</option>
+					</select>
+					<select id="city" name="city" onchange="load(value,county)">
+						<option value="none">--请选择市区--</option>
+					</select>
+					<select id="county" name="county">
+						<option value="none">--请选择县镇--</option>
+					</select>
+					<input type="text" class="easyui-validatebox" name="pickaddress"
+						required="true" size="68"/></td>
 				</tr>
 				<tr>
 					<td>到达城市:</td>

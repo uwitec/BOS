@@ -103,11 +103,22 @@ public class DecidedzoneAction extends BaseAction<Decidedzone>{
 		return "association";
 	}
 	//修改定区客户关系
-	@Action(value="assignC2D")
+	@Action(value="assignC2D",results={
+			@Result(name="assignC2D",location="/WEB-INF/pages/base/decidedzone.jsp")})
 	public String assignC2D(){
 		String[] customerIds = ServletActionContext.getRequest().getParameterValues("customerIds");
 		facedeService.getDecidedzoneService().assignC2D(customerIds,model.getId());
-		return "none";
+		return "assignC2D";
 	}
 	
+	//查询客户
+	@Action(value="findCustomer",results={
+			@Result(name="findCustomer",type="fastJson",params={"includeProperties","id,name,station"})})
+	public String findCustomer(){
+		String did = getParameter("decidedzoneId");
+		List<Customers> c = (List<Customers>)facedeService.getDecidedzoneService().findCustomer(did);
+		push(c);
+		
+		return "findCustomer";
+	}
 }

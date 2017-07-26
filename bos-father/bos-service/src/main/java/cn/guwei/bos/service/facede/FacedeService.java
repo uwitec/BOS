@@ -10,12 +10,20 @@ import cn.guwei.bos.service.bc.RegionService;
 import cn.guwei.bos.service.bc.StaffService;
 import cn.guwei.bos.service.bc.StandardService;
 import cn.guwei.bos.service.bc.SubareaService;
+import cn.guwei.bos.service.city.CityService;
 import cn.guwei.bos.service.user.UserService;
 
 @Service("facedeService")
 @Transactional
 public class FacedeService {
 
+	@Autowired
+	private CityService cityService;
+	
+	public CityService getCityService(){
+		return cityService;
+	}
+	
 	@Autowired
 	private DecidedzoneService decidedzoneService;
 

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.guwei.bos.dao.bc.SubareaDao;
+import cn.guwei.bos.domain.bc.Decidedzone;
 import cn.guwei.bos.domain.bc.Subarea;
 import cn.guwei.bos.service.bc.SubareaService;
 @Service("subarea")
@@ -51,6 +52,17 @@ public class SubareaServiceImpl implements SubareaService {
 	@Override
 	public List<Subarea> ajaxListInfo() {
 		return subareaDao.findAllInUse();
+	}
+
+	@Override
+	public List<Subarea> findByDecidedzone(Decidedzone decidedzone) {
+		List<Subarea> list = subareaDao.findByDecidedzone(decidedzone);
+		if (list!=null && list.size()>0) {
+			for (Subarea s : list) {
+				Hibernate.initialize(s.getRegion());
+			}
+		} 
+		return list;
 	}
 
 	

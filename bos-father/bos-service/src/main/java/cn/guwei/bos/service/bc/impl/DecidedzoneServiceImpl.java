@@ -55,7 +55,7 @@ public class DecidedzoneServiceImpl implements DecidedzoneService {
 		String url = CRM_BASE_URL+"/getNoAssociationsCD";
 		List<Customers> list = 
 				(List<Customers>) WebClient.create(url).accept(MediaType.APPLICATION_JSON).getCollection(Customers.class);
-		return list.isEmpty()?null:list;
+		return list;
 	}
 
 	@Override
@@ -63,7 +63,7 @@ public class DecidedzoneServiceImpl implements DecidedzoneService {
 		String url = CRM_BASE_URL+"/getAssociationsCD/"+string;
 		List<Customers> list = 
 				(List<Customers>) WebClient.create(url).accept(MediaType.APPLICATION_JSON).getCollection(Customers.class);
-		return list.isEmpty()?null:list;
+		return list;
 	}
 
 	@Override
@@ -76,9 +76,18 @@ public class DecidedzoneServiceImpl implements DecidedzoneService {
 			}
 			String idstring = sb.substring(0, sb.length()-1);
 			url = url+idstring+"/"+id;
+		} else {
+			url = url + "none/"+ id;
 		}
 		
 		WebClient.create(url).put(null);
+	}
+
+	@Override
+	public List<Customers> findCustomer(String did) {
+		String url = CRM_BASE_URL+"/findCustomerByDid/"+did;
+		List<Customers> list = (List<Customers>)WebClient.create(url).getCollection(Customers.class);
+		return list;
 	}
 
 	

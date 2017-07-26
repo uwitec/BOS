@@ -174,6 +174,16 @@ public class SubareaAction extends BaseAction<Subarea>{
 		}
 		return "success";
 	}
+	//查询定区对应的分区
+	@Action(value="querySubareaBydid")
+	public String querySubareaBydid(){
+		String did = getParameter("decidedzoneId");
+		Decidedzone decidedzone = new Decidedzone();
+		decidedzone.setId(did);
+		List<Subarea> Subarea = facedeService.getSubareaService().findByDecidedzone(decidedzone);
+		push(Subarea);
+		return "success";
+	}
 	
 	//下载
 	@Action(value="download")
