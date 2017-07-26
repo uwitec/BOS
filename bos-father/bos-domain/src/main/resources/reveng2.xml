@@ -5,6 +5,7 @@
     <schema-selection  match-table="t_user"  match-catalog="bos"/>
     <schema-selection  match-table="t_standard"  match-catalog="bos"/>
     <schema-selection  match-table="bc_.*"  match-catalog="bos"/>
+    <schema-selection  match-table="customers"  match-catalog="bos"/>
     
     <table name="t_user" catalog="bos" class="cn.guwei.bos.domain.User">
 	</table>
@@ -26,6 +27,7 @@
 		</primary-key>
 	</table>
     <table name="bc_region" catalog="bos" class="cn.guwei.bos.domain.bc.Region"/>
+    <table name="customers" catalog="bos" class="cn.guwei.crm.domain.Customers"/>
 
 
 </hibernate-reverse-engineering>

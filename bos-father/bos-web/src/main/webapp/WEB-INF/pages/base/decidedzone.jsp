@@ -46,7 +46,30 @@
 	}
 	
 	function doAssociations(){
-		$('#customerWindow').window('open');
+		var arr = $("#grid").datagrid("getSelections");
+		if (arr==null||arr.length==0) {
+			$.messager.alert("警告！","请先选择定区","warning")
+			return ;
+		} else {
+			$("#noassociationSelect")[0].length=0;
+			$("#associationSelect").empty;
+			$('#customerWindow').window('open');
+			$.post(
+				'${pageContext.request.contextPath}/decidedzone/getnoassociation',
+				function(data){ 
+					$(data).each(function(){
+						$("#noassociationSelect").append("<option value='"+this.id+"'>"+this.name+"</option>");
+					});
+				});
+			$.post(
+				'${pageContext.request.contextPath}/decidedzone/getassociation',
+				{"id":arr[0].id},
+				function(data){
+					$(data).each(function(){
+						$("#associationSelect").append("<option value='"+this.id+"'>"+this.name+"</option>");
+					});
+				});
+		}
 	}
 	
 	//工具栏
@@ -137,7 +160,8 @@
 			url : "${pageContext.request.contextPath}/decidedzone/pageQuery",
 			idField : 'id',
 			columns : columns,
-			onDblClickRow : doDblClickRow
+			onDblClickRow : doDblClickRow,
+			singleSelect : true
 		});
 		
 		// 添加、修改定区
@@ -170,6 +194,22 @@
 		$("#save").click(function() {
 			$("#saveForm").submit();
 			$("#searchWindow").window("close");
+		});
+		
+		//左右移动
+		$("#toRight").click(function(){
+			$("#associationSelect").append($("#noassociationSelect option:selected"))
+		});
+		$("#toLeft").click(function(){
+			$("#noassociationSelect").append($("#associationSelect option:selected"))
+		});
+		
+		$("#associationBtn").click(function(){
+			var arr = $("#grid").datagrid("getSelections");
+			$("#customerDecidedZoneId").val(arr[0].id);
+			$("#associationSelect").attr("selected","selected"); //表单提交会把选中的opt提交给后台
+			$("#customerForm").submit();
+			$('#customerWindow').window('close');
 		});
 	});
 
@@ -388,7 +428,7 @@
 	<!-- 关联客户窗口 -->
 	<div class="easyui-window" title="关联客户窗口" id="customerWindow" collapsible="false" closed="true" minimizable="false" maximizable="false" style="top:20px;left:200px;width: 400px;height: 300px;">
 		<div style="overflow:auto;padding:5px;" border="false">
-			<form id="customerForm" action="${pageContext.request.contextPath }/decidedzone_assigncustomerstodecidedzone.action" method="post">
+			<form id="customerForm" action="${pageContext.request.contextPath }/decidedzone/assignC2D" method="post">
 				<table class="table-edit" width="80%" align="center">
 					<tr class="title">
 						<td colspan="3">关联客户</td>
@@ -407,7 +447,7 @@
 						</td>
 					</tr>
 					<tr>
-						<td colspan="3"><a id="associationBtn" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-save'">关联客户</a> </td>
+						<td colspan="3"><a id="associationBtn" href="javascript:;" class="easyui-linkbutton" data-options="iconCls:'icon-save'">关联客户</a> </td>
 					</tr>
 				</table>
 			</form>

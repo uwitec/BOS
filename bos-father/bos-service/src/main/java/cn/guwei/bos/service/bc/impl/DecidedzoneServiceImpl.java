@@ -2,6 +2,9 @@ package cn.guwei.bos.service.bc.impl;
 
 import java.util.List;
 
+import javax.ws.rs.core.MediaType;
+
+import org.apache.cxf.jaxrs.client.WebClient;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -13,7 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 import cn.guwei.bos.dao.bc.DecidedzoneDao;
 import cn.guwei.bos.dao.bc.SubareaDao;
 import cn.guwei.bos.domain.bc.Decidedzone;
+import cn.guwei.bos.domain.customer.Customers;
 import cn.guwei.bos.service.bc.DecidedzoneService;
+@SuppressWarnings("all")
 @Service("decidedzoneService")
 @Transactional
 public class DecidedzoneServiceImpl implements DecidedzoneService {
@@ -43,6 +48,37 @@ public class DecidedzoneServiceImpl implements DecidedzoneService {
 				subareaDao.addDecidedzoneId(id,model);
 			}
 		}
+	}
+
+	@Override
+	public List<Customers> getNoAssociation() {
+		String url = CRM_BASE_URL+"/getNoAssociationsCD";
+		List<Customers> list = 
+				(List<Customers>) WebClient.create(url).accept(MediaType.APPLICATION_JSON).getCollection(Customers.class);
+		return list.isEmpty()?null:list;
+	}
+
+	@Override
+	public List<Customers> getAssociation(String string) {
+		String url = CRM_BASE_URL+"/getAssociationsCD/"+string;
+		List<Customers> list = 
+				(List<Customers>) WebClient.create(url).accept(MediaType.APPLICATION_JSON).getCollection(Customers.class);
+		return list.isEmpty()?null:list;
+	}
+
+	@Override
+	public void assignC2D(String[] customerIds, String id) {
+		String url = CRM_BASE_URL+"/assignedAssociationCD/";
+		if (customerIds!=null&&customerIds.length>0) {
+			StringBuffer sb = new StringBuffer();
+			for (String cid : customerIds) {
+				sb.append(cid).append(",");
+			}
+			String idstring = sb.substring(0, sb.length()-1);
+			url = url+idstring+"/"+id;
+		}
+		
+		WebClient.create(url).put(null);
 	}
 
 	

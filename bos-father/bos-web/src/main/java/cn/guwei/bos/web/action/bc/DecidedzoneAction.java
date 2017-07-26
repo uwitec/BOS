@@ -1,6 +1,7 @@
 package cn.guwei.bos.web.action.bc;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Controller;
 
 import cn.guwei.bos.domain.bc.Decidedzone;
 import cn.guwei.bos.domain.bc.Staff;
+import cn.guwei.bos.domain.customer.Customers;
 import cn.guwei.bos.web.action.BaseAction;
 
 @Controller("decidedzoneAction")
@@ -84,23 +86,28 @@ public class DecidedzoneAction extends BaseAction<Decidedzone>{
 		return "save";
 	} 
 	
-//	//修改
-//	@Action(value="updateField")
-//	public String updateField(){
-//		try {
-//			Region region = new Region();
-//			region.setId(getParameter("region[id]"));
-//			//Decidedzone decidedzone = new Decidedzone();
-//			//decidedzone.setId(getPageRequest("decidedzone[id]"));
-//			model.setRegion(region);
-//			facedeService.getSubareaService().save(model);
-//			push(true);
-//		} catch (Exception e) {
-//			push(false);
-//			e.printStackTrace();
-//		}
-//		return "success";
-//	}
-	
+	//获取未关联定区的客户
+	@Action(value="getnoassociation",results={
+			@Result(name="noAssociation",type="fastJson",params={"includeProperties","id,name"})})
+	public String getnoassociation(){
+		List<Customers> list = facedeService.getDecidedzoneService().getNoAssociation();
+		push(list);
+		return "noAssociation";
+	}
+	//获取已关联定区的客户
+	@Action(value="getassociation",results={
+			@Result(name="association",type="fastJson",params={"includeProperties","id,name"})})
+	public String getassociation(){
+		List<Customers> list = facedeService.getDecidedzoneService().getAssociation(model.getId());
+		push(list);
+		return "association";
+	}
+	//修改定区客户关系
+	@Action(value="assignC2D")
+	public String assignC2D(){
+		String[] customerIds = ServletActionContext.getRequest().getParameterValues("customerIds");
+		facedeService.getDecidedzoneService().assignC2D(customerIds,model.getId());
+		return "none";
+	}
 	
 }
