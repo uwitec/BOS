@@ -35,10 +35,40 @@
 		$('#save').click(function(){
 			// 对form 进行校验
 			if($('#noticebillForm').form('validate')){
+				var p = document.getElementById("province").selectedOptions[0].text;
+				var c = document.getElementById("city").selectedOptions[0].text;
+				var cc = document.getElementById("county").selectedOptions[0].text;
+				//var p = $("#hprovince")[0].selectOptions[0].text;				
+				//var c = $("#hcity")[0].selectOptions[0].text;				
+				//var cc = $("#hcounty")[0].selectOptions[0].text;				
+				$("#hprovince").val(p);
+				$("#hcity").val(c);
+				$("#hcounty").val(cc);
 				$('#noticebillForm').submit();
 			}
 		});
 		
+		$("#telephone").blur(function(){
+			$.post(
+				'${pageContext.request.contextPath}/noticebill/findCustomerByTel',
+				{"telephone":this.value},
+				function(data){
+					if (data) {
+						$("#tel_sp").html("<font color='green'>老客户</font>");
+						$("#customerId").show();
+						$("#cidtext").show();
+						$("#customerId").val(data.id);
+						$("#customerId").attr("readonly","readonly");
+						$("#customerName").val(data.name);
+					}else{
+						$("#tel_sp").html("");
+						$("#customerId").hide();
+						$("#cidtext").hide();
+						$("#customerId").val("");
+						$("#customerName").val("");
+					}
+				});
+		});
 	});
 	//三级联动
 	function load(pid,target){
@@ -69,7 +99,7 @@
 		</div>
 	</div>
 	<div region="center" style="overflow:auto;padding:5px;" border="false">
-		<form id="noticebillForm" action="" method="post">
+		<form id="noticebillForm" action="${pageContext.request.contextPath}/noticebill/save" method="post">
 			<table class="table-edit" width="95%" align="center">
 				<tr class="title">
 					<td colspan="4">客户信息</td>
@@ -77,18 +107,16 @@
 				<tr>
 					<td>来电号码:</td>
 					<td><input type="text" class="easyui-validatebox" name="telephone"
-						required="true" /></td>
-					<td>客户编号:</td>
-					<td><input type="text" class="easyui-validatebox"  name="customerId"
-						required="true" /></td>
+						id="telephone" required="true" />
+						<span id="tel_sp"></span></td>
+					<td id="cidtext">客户编号:</td>
+					<td><input type="text"   name="customerId"
+						id="customerId"  /></td>
 				</tr>
 				<tr>
 					<td>客户姓名:</td>
 					<td><input type="text" class="easyui-validatebox" name="customerName"
-						required="true" /></td>
-					<td>联系人:</td>
-					<td><input type="text" class="easyui-validatebox" name="delegater"
-						required="true" /></td>
+						id="customerName" required="true" /></td>
 				</tr>
 				<tr class="title">
 					<td colspan="4">货物信息</td>
@@ -121,6 +149,9 @@
 					<select id="county" name="county">
 						<option value="none">--请选择县镇--</option>
 					</select>
+					<input type="hidden" name="hprovince" id="hprovince"/>
+					<input type="hidden" name="hcity" id="hcity"/>
+					<input type="hidden" name="hcounty" id="hcounty"/>
 					<input type="text" class="easyui-validatebox" name="pickaddress"
 						required="true" size="68"/></td>
 				</tr>

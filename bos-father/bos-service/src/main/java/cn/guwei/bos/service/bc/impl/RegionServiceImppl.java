@@ -84,7 +84,6 @@ public class RegionServiceImppl implements RegionService {
 			jsonString = JSON.toJSONString(map);
 			redisCRUD.writeJSONStringToRedis(pagekey, jsonString);
 		}		
-			
 		
 		return jsonString;
 	}

@@ -11,12 +11,19 @@ import cn.guwei.bos.service.bc.StaffService;
 import cn.guwei.bos.service.bc.StandardService;
 import cn.guwei.bos.service.bc.SubareaService;
 import cn.guwei.bos.service.city.CityService;
+import cn.guwei.bos.service.qp.NoticebillService;
 import cn.guwei.bos.service.user.UserService;
 
 @Service("facedeService")
 @Transactional
 public class FacedeService {
 
+	@Autowired
+	private NoticebillService noticebillService;
+	public NoticebillService getNoticebillService(){
+		return noticebillService;
+	}
+	
 	@Autowired
 	private CityService cityService;
 	

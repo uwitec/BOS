@@ -68,7 +68,7 @@ public class Subarea  implements java.io.Serializable {
 @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="DECIDEDZONE_ID")
 //@JSON(serialize=false)
-@JSONField(serialize=false)
+//@JSONField(serialize=false)
     public Decidedzone getDecidedzone() {
         return this.decidedzone;
     }

@@ -119,16 +119,16 @@ public class Region  implements java.io.Serializable {
     public void setCitycode(String citycode) {
         this.citycode = citycode;
     }
-//@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY, mappedBy="region")
-////@JSON(serialize=false)
-////@JSONField(serialize=false)
-//    public Set<Subarea> getSubareas() {
-//        return this.subareas;
-//    }
-//    
-//    public void setSubareas(Set<Subarea> subareas) {
-//        this.subareas = subareas;
-//    }
+@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY, mappedBy="region")
+//@JSON(serialize=false)
+//@JSONField(serialize=false)
+    public Set<Subarea> getSubareas() {
+        return this.subareas;
+    }
+    
+    public void setSubareas(Set<Subarea> subareas) {
+        this.subareas = subareas;
+    }
 
 @Transient
     public String getName(){

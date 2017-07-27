@@ -16,4 +16,7 @@ public interface RegionDao extends JpaRepository<Region, String>,JpaSpecificatio
 	@Query("from Region where province like ?1 or city like ?1 or district like ?1")
 	List<Region> findRegionLikeq(String q);
 
+	@Query("from Region where province =?1 and city =?2 and district =?3 ")
+	Region findByPCC(String province, String city, String county);
+
 }
