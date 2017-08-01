@@ -1,5 +1,5 @@
 package cn.guwei.bos.domain.user;
-// Generated 2017-7-27 15:03:58 by Hibernate Tools 3.2.2.GA
+// Generated 2017-7-28 19:16:56 by Hibernate Tools 3.2.2.GA
 
 
 import static javax.persistence.GenerationType.IDENTITY;
@@ -14,12 +14,18 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
+import cn.guwei.bos.domain.auth.Role;
 import cn.guwei.bos.domain.qp.Noticebill;
 
 /**
@@ -45,6 +51,7 @@ public class User  implements java.io.Serializable {
      private String station;
      private String telephone;
      private Set<Noticebill> Noticebills = new HashSet<Noticebill>(0);
+     private Set<Role> roles = new HashSet<Role>(0);
 
     public User() {
     }
@@ -54,7 +61,7 @@ public class User  implements java.io.Serializable {
         this.email = email;
         this.password = password;
     }
-    public User(Date birthday, String email, String gender, String password, String remark, Long salary, String station, String telephone, Set<Noticebill> Noticebills) {
+    public User(Date birthday, String email, String gender, String password, String remark, Long salary, String station, String telephone, Set<Noticebill> Noticebills, Set<Role> roles) {
        this.birthday = birthday;
        this.email = email;
        this.gender = gender;
@@ -64,6 +71,7 @@ public class User  implements java.io.Serializable {
        this.station = station;
        this.telephone = telephone;
        this.Noticebills = Noticebills;
+       this.roles = roles;
     }
    
      @Id @GeneratedValue(strategy=IDENTITY)
@@ -148,13 +156,26 @@ public class User  implements java.io.Serializable {
     public void setTelephone(String telephone) {
         this.telephone = telephone;
     }
-@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY, mappedBy="user")
+@OneToMany( fetch=FetchType.LAZY, mappedBy="user")
+@JSONField(serialize=false)
     public Set<Noticebill> getNoticebills() {
         return this.Noticebills;
     }
     
-    public void setNoticebills(Set<Noticebill> Noticebills) {
+    public void setNoticebills(Set<Noticebill> qpNoticebills) {
         this.Noticebills = Noticebills;
+    }
+@ManyToMany( fetch=FetchType.LAZY)
+    @JoinTable(name="user_role", catalog="bos", joinColumns = { 
+        @JoinColumn(name="user_id", nullable=false, updatable=false) }, inverseJoinColumns = { 
+        @JoinColumn(name="role_id", nullable=false, updatable=false) })
+@JSONField(serialize=false)
+    public Set<Role> getRoles() {
+        return this.roles;
+    }
+    
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 
 

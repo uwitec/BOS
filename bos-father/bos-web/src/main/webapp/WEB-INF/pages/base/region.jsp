@@ -44,6 +44,10 @@
 		$("#queryRegionWindow").window("open");
 	}
 	
+	function doexport(){
+		location.href="${pageContext.request.contextPath}/region/download"
+	}
+	
 	//工具栏
 	var toolbar = [{
 		id : 'button-view',	
@@ -64,6 +68,11 @@
 		id : 'button-import',
 		text : '导入',
 		iconCls : 'icon-redo'
+	}, {
+		id : 'button-export',
+		text : '导出pdf',
+		iconCls : 'icon-redo',
+		handler : doexport
 	}];
 	// 定义列
 	var columns = [ [ {

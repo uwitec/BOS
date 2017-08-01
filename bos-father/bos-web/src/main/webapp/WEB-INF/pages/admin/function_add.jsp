@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
+﻿<%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -27,69 +27,94 @@
 	src="${pageContext.request.contextPath }/js/easyui/locale/easyui-lang-zh_CN.js"
 	type="text/javascript"></script>
 <script type="text/javascript">
-	$(function(){
-		// 点击保存
-		$('#save').click(function(){
-			location.href='${pageContext.request.contextPath}/page_admin_function.action';
-		});
+<script type="text/javascript">
+$(function(){
+	$("#grid").datagrid({
+		iconCls : 'icon-forward',
+		fit : true,
+		border : false,
+		rownumbers : true,
+		striped : true,
+		pageList: [3,5,10],
+		pagination : true,
+		toolbar : [
+			{
+				id : 'add',
+				text : '添加权限',
+				iconCls : 'icon-add',
+				handler : function(){
+					location.href='${pageContext.request.contextPath}/page_admin_function_add.action';
+				}
+			}           
+		],
+		url : '${pageContext.request.contextPath}/function/pageQuery',
+		columns : [[
+		  {
+			  field : 'id',
+			  title : '编号',
+			  width : 200
+		  },
+		  {
+			  field : 'name',
+			  title : '名称',
+			  width : 200
+		  },  
+		  {
+			  field : 'code',
+			  title : '权限关键字',
+			  width : 200
+		  }, 
+		  {
+			  field : 'description',
+			  title : '描述',
+			  width : 200
+		  },  
+		]]
 	});
+});
+</script>	
+
+<script type="text/javascript">
+$(function(){
+	// 点击保存
+	$('#save').click(function(){
+		  if($("#functionForm").form("validate")){
+			  $("#functionForm").submit();
+		  }
+	});
+});
 </script>	
 </head>
 <body class="easyui-layout">
 <div data-options="region:'north'">
-	<div class="datagrid-toolbar">
-		<a id="save" icon="icon-save" href="#" class="easyui-linkbutton" plain="true" >保存</a>
-	</div>
+<div class="datagrid-toolbar">
+	<a id="save" icon="icon-save" href="#" class="easyui-linkbutton" plain="true" >保存</a>
+</div>
 </div>
 <div data-options="region:'center'">
-	<form id="functionForm" method="post">
-				<table class="table-edit" width="80%" align="center">
-					<tr class="title">
-						<td colspan="2">功能权限信息</td>
-					</tr>
-					<tr>
-						<td width="200">编号</td>
-						<td>
-							<input type="text" name="id" class="easyui-validatebox" data-options="required:true" />						
-						</td>
-					</tr>
-					<tr>
-						<td>名称</td>
-						<td><input type="text" name="name" class="easyui-validatebox" data-options="required:true" /></td>
-					</tr>
-					<tr>
-						<td>访问路径</td>
-						<td><input type="text" name="page"  /></td>
-					</tr>
-					<tr>
-						<td>是否生成菜单</td>
-						<td>
-							<select name="generateMenu" class="easyui-combobox">
-								<option value="0">不生成</option>
-								<option value="1">生成</option>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td>优先级</td>
-						<td>
-							<input type="text" name="zindex" class="easyui-numberbox" data-options="required:true" />
-						</td>
-					</tr>
-					<tr>
-						<td>父功能点</td>
-						<td>
-							<input name="parentFunction.id" class="easyui-combobox" data-options="valueField:'id',textField:'info',url:''"/>
-						</td>
-					</tr>
-					<tr>
-						<td>描述</td>
-						<td>
-							<textarea name="description" rows="4" cols="60"></textarea>
-						</td>
-					</tr>
-					</table>
-			</form>
+<form id="functionForm" action="${pageContext.request.contextPath }/function/save" method="post">
+			<table class="table-edit" width="80%" align="center">
+				<tr class="title">
+					<td colspan="2">功能权限信息</td>
+				</tr>
+				<tr>
+					<td width="200">权限关键字</td>
+					<td>
+						<input type="text" name="code" class="easyui-validatebox" data-options="required:true" />						
+					</td>
+				</tr>
+				<tr>
+					<td>名称</td>
+					<td><input type="text" name="name" class="easyui-validatebox" data-options="required:true" /></td>
+				</tr>
+				<tr>
+					<td>描述</td>
+					<td>
+						<textarea name="description" rows="4" cols="60"></textarea>
+					</td>
+				</tr>
+				</table>
+		</form>
 </div>
 </body>
 </html>

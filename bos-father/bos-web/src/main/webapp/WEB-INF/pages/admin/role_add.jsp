@@ -51,7 +51,7 @@
 		};
 		
 		$.ajax({
-			url : '${pageContext.request.contextPath}/json/menu.json',
+			url : '${pageContext.request.contextPath}/menu/ajaxList',
 			type : 'POST',
 			dataType : 'text',
 			success : function(data) {
@@ -67,8 +67,29 @@
 		
 		// 点击保存
 		$('#save').click(function(){
-			location.href='${pageContext.request.contextPath}/page_admin_privilege.action';
+			//  确保 选中菜单 id 提交给RoleAction   选中 ztree  id--->string  放到表单隐藏域 
+			//  menuIds    ztree 获取选中 checknode选项
+			var treeObj = $.fn.zTree.getZTreeObj("functionTree");
+            var nodes = treeObj.getCheckedNodes(true);//  选中的集合 
+            if(nodes!=null&&nodes.length!=0){
+            	  var arr = new Array();
+            	   for(var i=0;i<nodes.length;i++){
+            		     arr.push(nodes[i].id);
+            	   }
+            	   //  影藏域设值
+            	   $("#menuIds").val(arr.join(","));
+            }
+			$("#roleForm").submit();
 		});
+		
+		//  权限数据checkbox生成
+		 $.post("${pageContext.request.contextPath}/function/ajaxList",function(data){
+			 $(data).each(function(){
+				 //  List<Function>
+				 $("#functionIds").append("<input name='functionIds' type='checkbox' value='"+this.id+"'>"+this.name+"</input>&nbsp;&nbsp;");
+			 });
+		 });
+		
 	});
 </script>	
 </head>
@@ -79,15 +100,17 @@
 			</div>
 		</div>
 		<div region="center" style="overflow:auto;padding:5px;" border="false">
-			<form id="roleForm" method="post">
+			<form id="roleForm" action="${pageContext.request.contextPath }/role/save" method="post">
 				<table class="table-edit" width="80%" align="center">
 					<tr class="title">
 						<td colspan="2">角色信息</td>
 					</tr>
 					<tr>
-						<td width="200">编号</td>
+						<td width="200">角色关键字</td>
 						<td>
-							<input type="text" name="id" class="easyui-validatebox" data-options="required:true" />						
+						 <!-- 菜单的ids -->
+						   <input type="hidden" id="menuIds" name="menuIds">
+							<input type="text" name="code" class="easyui-validatebox" data-options="required:true" />						
 						</td>
 					</tr>
 					<tr>
@@ -101,7 +124,13 @@
 						</td>
 					</tr>
 					<tr>
-						<td>授权</td>
+						<td>权限选择</td>
+						<td id="functionIds">
+							<!-- 动态生成checkbox -->
+						</td>
+					</tr>
+					<tr>
+						<td>菜单树</td>
 						<td>
 							<ul id="functionTree" class="ztree"></ul>
 						</td>

@@ -29,6 +29,13 @@
 <script type="text/javascript">
 	$(function(){
 		$("#grid").datagrid({
+			iconCls : 'icon-forward',
+			fit : true,
+			border : false,
+			rownumbers : true,
+			striped : true,
+			pageList: [3,5,10],
+			pagination : true,
 			toolbar : [
 				{
 					id : 'add',
@@ -39,7 +46,7 @@
 					}
 				}           
 			],
-			url : '',
+			url : '${pageContext.request.contextPath}/function/pageQuery',
 			columns : [[
 			  {
 				  field : 'id',
@@ -52,25 +59,15 @@
 				  width : 200
 			  },  
 			  {
+				  field : 'code',
+				  title : '权限关键字',
+				  width : 200
+			  }, 
+			  {
 				  field : 'description',
 				  title : '描述',
 				  width : 200
 			  },  
-			  {
-				  field : 'generateMenu',
-				  title : '是否生成菜单',
-				  width : 200
-			  },  
-			  {
-				  field : 'zindex',
-				  title : '优先级',
-				  width : 200
-			  },  
-			  {
-				  field : 'page',
-				  title : '路径',
-				  width : 200
-			  }
 			]]
 		});
 	});

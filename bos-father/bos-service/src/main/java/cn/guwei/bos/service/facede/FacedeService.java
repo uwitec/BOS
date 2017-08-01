@@ -5,6 +5,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.guwei.bos.domain.bc.Decidedzone;
+import cn.guwei.bos.service.auth.FunctionService;
+import cn.guwei.bos.service.auth.MenuService;
+import cn.guwei.bos.service.auth.RoleService;
 import cn.guwei.bos.service.bc.DecidedzoneService;
 import cn.guwei.bos.service.bc.RegionService;
 import cn.guwei.bos.service.bc.StaffService;
@@ -71,6 +74,22 @@ public class FacedeService {
 
 	public SubareaService getSubareaService() {
 		return subareaService;
+	}
+
+	@Autowired
+	private FunctionService functionService;
+	public FunctionService getFunctionService() {
+		return functionService;
+	}
+	@Autowired
+	private MenuService menuService;
+	public MenuService getMenuService() {
+		return menuService;
+	}
+	@Autowired
+	private RoleService roleService;
+	public RoleService getRoleService() {
+		return roleService;
 	}
 	
 }

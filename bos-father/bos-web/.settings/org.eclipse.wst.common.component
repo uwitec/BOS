@@ -4,6 +4,12 @@
         <wb-resource deploy-path="/" source-path="/src/main/webapp" tag="defaultRootSource"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
+        <dependent-module archiveName="bos-util-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/bos-util/bos-util">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="bos-shiro-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/bos-shiro/bos-shiro">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <dependent-module archiveName="bos-service-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/bos-service/bos-service">
             <dependency-type>uses</dependency-type>
         </dependent-module>
@@ -17,9 +23,6 @@
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module archiveName="bos-mqproducer-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/bos-mqproducer/bos-mqproducer">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
-        <dependent-module archiveName="bos-util-0.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/bos-util/bos-util">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <property name="context-root" value="bos-web"/>

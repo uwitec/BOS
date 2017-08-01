@@ -51,7 +51,13 @@ public class SubareaServiceImpl implements SubareaService {
 
 	@Override
 	public List<Subarea> ajaxListInfo() {
-		return subareaDao.findAllInUse();
+		List<Subarea> list = subareaDao.findAllInUse();
+		if (list!=null && list.size()>0) {
+			for (Subarea s : list) {
+				Hibernate.initialize(s.getRegion());
+			}
+		} 
+		return list;
 	}
 
 	@Override

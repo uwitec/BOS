@@ -8,11 +8,7 @@
   <artifactId>bos-web</artifactId>
   <packaging>war</packaging>
   <dependencies>
-  	<dependency>
-  		<groupId>com.guwei.maven.bos</groupId>
-  		<artifactId>bos-service</artifactId>
-  		<version>0.0.1-SNAPSHOT</version>
-  	</dependency>
+  	
   	<dependency>
   		<groupId>org.springframework</groupId>
   		<artifactId>spring-web</artifactId>
@@ -65,8 +61,38 @@
 			<groupId>org.apache.struts</groupId>
 			<artifactId>struts2-json-plugin</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.guwei.maven.bos</groupId>
+			<artifactId>bos-shiro</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 		
+		<dependency>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>itext-asian</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.lowagie</groupId>
+			<artifactId>itext</artifactId>
+		</dependency>
+		
+		<!-- groovy -->
+		<dependency>
+			<groupId>org.codehaus.groovy</groupId>
+			<artifactId>groovy-all</artifactId>
+		</dependency>
 
+		<!-- jasperreport -->
+		<dependency>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>com.lowagie</groupId>
+					<artifactId>itext</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
   </dependencies>
   <build>
      <plugins>

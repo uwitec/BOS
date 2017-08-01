@@ -38,9 +38,6 @@
 				var p = document.getElementById("province").selectedOptions[0].text;
 				var c = document.getElementById("city").selectedOptions[0].text;
 				var cc = document.getElementById("county").selectedOptions[0].text;
-				//var p = $("#hprovince")[0].selectOptions[0].text;				
-				//var c = $("#hcity")[0].selectOptions[0].text;				
-				//var cc = $("#hcounty")[0].selectOptions[0].text;				
 				$("#hprovince").val(p);
 				$("#hcity").val(c);
 				$("#hcounty").val(cc);

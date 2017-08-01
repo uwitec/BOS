@@ -2,6 +2,9 @@ package cn.guwei.bos.service.user;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+
 import cn.guwei.bos.domain.user.User;
 
 
@@ -23,4 +26,10 @@ public interface UserService {
 	public void updatePassword(String telephone, String password);
 
 	public void editPassword(String email, String password);
+
+	public User findUserByEmail(String email);
+
+	public void save(User model, String[] values);
+
+	public Page<User> findAll(PageRequest pageRequest);
 }

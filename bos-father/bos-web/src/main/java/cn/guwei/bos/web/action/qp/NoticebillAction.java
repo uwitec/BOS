@@ -41,7 +41,7 @@ public class NoticebillAction extends BaseAction<Noticebill>{
 		String province = getParameter("hprovince");
 		String city = getParameter("hcity");
 		String county = getParameter("hcounty");
-		model.setPickaddress(province+city+county);
+		//model.setPickaddress(province+city+county);
 		
 		facedeService.getNoticebillService().saveNoticebill(model,province,city,county);
 		return "save";

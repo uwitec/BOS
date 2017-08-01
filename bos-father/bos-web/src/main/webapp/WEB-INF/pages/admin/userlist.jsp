@@ -50,8 +50,8 @@
 		checkbox : true,
 		rowspan : 2
 	}, {
-		field : 'username',
-		title : '名称',
+		field : 'email',
+		title : '账号',
 		width : 80,
 		rowspan : 2
 	} ] ];
@@ -99,7 +99,9 @@
 			rownumbers : true,
 			striped : true,
 			toolbar : toolbar,
-			url : "json/users.json",
+			pageList: [3,5,10],
+			pagination : true,
+			url : "${pageContext.request.contextPath}/user/pageQuery",
 			idField : 'id', 
 			frozenColumns : frozenColumns,
 			columns : columns,
@@ -121,7 +123,6 @@
 	}
 	
 	function doAdd() {
-		alert("添加用户");
 		location.href="${pageContext.request.contextPath}/page_admin_userinfo.action";
 	}
 

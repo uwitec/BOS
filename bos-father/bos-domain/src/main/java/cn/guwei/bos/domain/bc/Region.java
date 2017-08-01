@@ -121,7 +121,7 @@ public class Region  implements java.io.Serializable {
     }
 @OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY, mappedBy="region")
 //@JSON(serialize=false)
-//@JSONField(serialize=false)
+@JSONField(serialize=false)
     public Set<Subarea> getSubareas() {
         return this.subareas;
     }

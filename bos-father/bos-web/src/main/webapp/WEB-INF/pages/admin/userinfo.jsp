@@ -30,8 +30,19 @@
 	$(function(){
 		$("body").css({visibility:"visible"});
 		$('#save').click(function(){
-			$('#form').submit();
+			if ($('#form').form("validate")) {
+				$('#form').submit();
+			}
 		});
+		
+	//  角色数据checkbox生成
+	 $.post("${pageContext.request.contextPath}/role/ajaxList",function(data){
+		 $(data).each(function(){
+			 //  List<Role>
+			 $("#grantRoles").append("<input name='roleIds' type='checkbox' value='"+this.id+"'>"+this.name+"</input>&nbsp;&nbsp;");
+		 });
+	 });
+		
 	});
 </script>	
 </head>
@@ -42,10 +53,11 @@
 		</div>
 	</div>
     <div region="center" style="overflow:auto;padding:5px;" border="false">
-       <form id="form" method="post" >
+       <form id="form" action="${pageContext.request.contextPath }/user/save" method="post" >
            <table class="table-edit"  width="95%" align="center">
            		<tr class="title"><td colspan="4">基本信息</td></tr>
-	           	<tr><td>用户名:</td><td><input type="text" name="username" id="username" class="easyui-validatebox" required="true" /></td>
+	           	<tr><td>账号:</td><td>
+	           	     <input type="text" name="email" id="username" class="easyui-validatebox" required="true" /></td>
 					<td>口令:</td><td><input type="password" name="password" id="password" class="easyui-validatebox" required="true" validType="minLength[5]" /></td></tr>
 				<tr class="title"><td colspan="4">其他信息</td></tr>
 	           	<tr><td>工资:</td><td><input type="text" name="salary" id="salary" class="easyui-numberbox" /></td>
@@ -73,7 +85,13 @@
 						<input type="text" name="telephone" id="telephone" class="easyui-validatebox" required="true" />
 					</td>
 				</tr>
-	           	<tr><td>备注:</td><td colspan="3"><textarea style="width:80%"></textarea></td></tr>
+				<tr>
+					<td>用户角色</td>
+					<td colspan="3" id="grantRoles">
+						
+					</td>
+				</tr>
+	           	<tr><td>备注:</td><td colspan="3"><textarea name="remark" style="width:80%"></textarea></td></tr>
            </table>
        </form>
 	</div>

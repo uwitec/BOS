@@ -128,6 +128,7 @@ public class Staff  implements java.io.Serializable {
         this.standard = standard;
     }
 @OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY, mappedBy="staff")
+@JSONField(serialize=false)
     public Set<Workbill> getWorkbills() {
         return this.workbills;
     }
@@ -136,6 +137,7 @@ public class Staff  implements java.io.Serializable {
         this.workbills = workbills;
     }
 @OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY, mappedBy="staff")
+@JSONField(serialize=false)
     public Set<Noticebill> getNoticebills() {
         return this.Noticebills;
     }

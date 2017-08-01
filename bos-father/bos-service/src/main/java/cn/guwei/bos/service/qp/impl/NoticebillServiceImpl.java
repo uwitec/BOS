@@ -64,23 +64,11 @@ public class NoticebillServiceImpl implements NoticebillService {
 	@Override
 	public void saveNoticebill(final Noticebill model, String province, String city, String county) {
 		
+		boolean flag = false; // 控制crm是否录入客户信息
 		noticebillDao.saveAndFlush(model);  //瞬时态 -->持久态  拥有了OID
+		final String add = model.getPickaddress();//短信地址 ， 大于有字数限制
+		model.setPickaddress(province+city+county+add);
 		
-		//1、更新客户信息，获得customerid
-		if (StringUtils.isNotBlank(model.getCustomerId()+"")) {
-			String url = BaseInterface.CRM_BASE_URL+"/updateCustomerById/"+model.getCustomerId()+"/"+model.getCustomerName()+"/"+model.getPickaddress();
-			WebClient.create(url).put(null);
-		} else {
-			String url = BaseInterface.CRM_BASE_URL+"/saveCustomer";
-			Customers customer = new Customers();
-			customer.setName(model.getCustomerName());
-			customer.setTelephone(model.getTelephone());
-			customer.setAddress(model.getPickaddress());
-			customer.setStation("英皇娱乐");
-			Response post = WebClient.create(url).accept(MediaType.APPLICATION_JSON).post(customer);
-			Customers entity = post.readEntity(Customers.class);
-			model.setCustomerId(entity.getId());
-		}
 		//2、自动分单 
 		//第一种方法：通过crm系统匹配
 		String url = BaseInterface.CRM_BASE_URL+"/findCustomerByAddress/"+model.getPickaddress();
@@ -93,28 +81,24 @@ public class NoticebillServiceImpl implements NoticebillService {
 					Staff staff = decidedzone.getStaff();
 					model.setStaff(staff);
 					model.setOrdertype("自动录入");
+					
 					//自动分配完成    生成工单
-					Workbill bill = new Workbill();
-					bill.setAttachbilltimes(0);  //催单的次数
-					bill.setBuildtime(new Date(System.currentTimeMillis()));
-					bill.setPickstate("新单");
-					bill.setNoticebill(model);  //生成bill他的外键是noticebill的主键，而此时noticebill的主键是自动生成的没有保存就没有主键，所以一开始把它变成持久态
-					bill.setRemark(model.getRemark());
-					bill.setStaff(staff);
-					bill.setType("新");
-					workbillDao.save(bill);  //工作单位录入完成
+					createWorkbill(model, decidedzone);
 					
 					// 发送短信mq
-					jmsQueueTemplate.send("bos_sms", new MessageCreator() {
+					jmsQueueTemplate.send("bos_staff", new MessageCreator() {
 						@Override
 						public Message createMessage(Session session) throws JMSException {
 							MapMessage message = session.createMapMessage();
+							message.setString("stafftel", model.getStaff().getTelephone());
+							message.setString("name", model.getCustomerName());
 							message.setString("telephone", model.getTelephone());
-							message.setString("code", "9999");
+							message.setString("address", add);
 							return (Message) message;
 						}
 					});
-					
+					flag = true;
+					saveCustomer(model,flag);
 					return ;
 				}
 			}
@@ -130,33 +114,63 @@ public class NoticebillServiceImpl implements NoticebillService {
 					if (decidedzone!=null) {
 						model.setStaff(decidedzone.getStaff());
 						model.setOrdertype("自动录入");
-						Workbill bill = new Workbill();
-						bill.setAttachbilltimes(0);  //催单的次数
-						bill.setBuildtime(new Date(System.currentTimeMillis()));
-						bill.setPickstate("新单");
-						bill.setNoticebill(model);
-						bill.setRemark(model.getRemark());
-						bill.setStaff(decidedzone.getStaff());
-						bill.setType("新");
-						workbillDao.save(bill);  //工作单位录入完成
+						
+						createWorkbill(model, decidedzone);
 						
 						// 发送短信mq
-						jmsQueueTemplate.send("bos_sms", new MessageCreator() {
+						jmsQueueTemplate.send("bos_staff", new MessageCreator() {
 							@Override
 							public Message createMessage(Session session) throws JMSException {
 								MapMessage message = session.createMapMessage();
+								message.setString("name", model.getCustomerName());
 								message.setString("telephone", model.getTelephone());
-								message.setString("code", "8888");
+								message.setString("address", model.getPickaddress());
 								return (Message) message;
 							}
 						});
 						
+						flag = false;
+						saveCustomer(model,flag);
 						return ;
 					}
 				}
 			}
 		}
+		
+		saveCustomer(model,flag);
 		model.setOrdertype("人工录入");
+	}
+
+	private void createWorkbill(final Noticebill model, Decidedzone decidedzone) {
+		Workbill bill = new Workbill();
+		bill.setAttachbilltimes(0);  //催单的次数
+		bill.setBuildtime(new Date(System.currentTimeMillis()));
+		bill.setPickstate("新单");
+		bill.setNoticebill(model);
+		bill.setRemark(model.getRemark());
+		bill.setStaff(decidedzone.getStaff());
+		bill.setType("新");
+		workbillDao.save(bill);  //工作单位录入完成
+	}
+
+	private void saveCustomer(Noticebill model, boolean flag) {
+		//1、更新客户信息，获得customerid
+		if (StringUtils.isNotBlank(model.getCustomerId()+"")) {
+			if (!flag) {  //flag = false 老客户，需要更新地址
+				String url = BaseInterface.CRM_BASE_URL+"/updateCustomerById/"+model.getCustomerId()+"/"+model.getCustomerName()+"/"+model.getPickaddress();
+				WebClient.create(url).put(null);
+			}
+		} else {
+			String url = BaseInterface.CRM_BASE_URL+"/saveCustomer";
+			Customers customer = new Customers();
+			customer.setName(model.getCustomerName());
+			customer.setTelephone(model.getTelephone());
+			customer.setAddress(model.getPickaddress());
+			customer.setStation("英皇娱乐");
+			Response post = WebClient.create(url).accept(MediaType.APPLICATION_JSON).post(customer);
+			Customers entity = post.readEntity(Customers.class);
+			model.setCustomerId(entity.getId());
+		}
 	}
 	
 	

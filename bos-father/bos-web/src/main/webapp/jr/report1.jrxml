@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report1" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="29d417b5-5a51-44dc-a11a-6ab4594834d8">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="company" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[select * from bc_region;]]>
+	</queryString>
+	<field name="ID" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="PROVINCE" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="CITY" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="DISTRICT" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="POSTCODE" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="SHORTCODE" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="CITYCODE" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="47" splitType="Stretch">
+			<staticText>
+				<reportElement x="192" y="0" width="188" height="43" uuid="e0c233c6-09ed-4327-90bf-d446e155c46a"/>
+				<textElement textAlignment="Center">
+					<font fontName="新宋体" size="24" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H"/>
+				</textElement>
+				<text><![CDATA[区域列表]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="29" splitType="Stretch">
+			<textField>
+				<reportElement x="428" y="0" width="76" height="29" uuid="33394645-5d01-46b4-9490-d7e2924787e6"/>
+				<textElement>
+					<font fontName="新宋体" size="14" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{company}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="35" splitType="Stretch">
+			<staticText>
+				<reportElement x="12" y="15" width="59" height="20" uuid="1dbb477c-60b4-4a40-9232-1e2087197578"/>
+				<textElement>
+					<font fontName="新宋体" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H"/>
+				</textElement>
+				<text><![CDATA[编号]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="91" y="15" width="44" height="20" uuid="1a994293-ac47-450f-9db7-7f7d3927a328"/>
+				<textElement>
+					<font fontName="新宋体" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H"/>
+				</textElement>
+				<text><![CDATA[省]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="169" y="15" width="46" height="20" uuid="2fb899de-c906-41f5-976e-a04be2d4c1b6"/>
+				<textElement>
+					<font fontName="新宋体" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H"/>
+				</textElement>
+				<text><![CDATA[市]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="232" y="15" width="54" height="20" uuid="ea7ce5ca-6a27-43d6-a95a-7c38a895a670"/>
+				<textElement>
+					<font fontName="新宋体" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H"/>
+				</textElement>
+				<text><![CDATA[区]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="303" y="15" width="58" height="20" uuid="beb4683c-5d68-4227-9a03-9eba23ebcda1"/>
+				<textElement>
+					<font fontName="新宋体" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H"/>
+				</textElement>
+				<text><![CDATA[邮编]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="380" y="15" width="48" height="20" uuid="7a23abe6-9685-4ea7-9983-6def14353250"/>
+				<textElement>
+					<font fontName="新宋体" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H"/>
+				</textElement>
+				<text><![CDATA[简码]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="447" y="15" width="57" height="20" uuid="447117c2-f6b3-4a15-807f-52b9c104e1a5"/>
+				<textElement>
+					<font fontName="新宋体" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H"/>
+				</textElement>
+				<text><![CDATA[城市编码]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="39" splitType="Stretch">
+			<textField>
+				<reportElement x="12" y="11" width="59" height="20" uuid="92573dd6-8a67-464a-8b42-7a8542f7f329"/>
+				<textElement>
+					<font fontName="新宋体" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ID}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="91" y="11" width="44" height="20" uuid="b218735c-8b65-4be8-8b0f-57f0b3be34ea"/>
+				<textElement>
+					<font fontName="新宋体" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{PROVINCE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="169" y="11" width="46" height="20" uuid="efb628bd-d4c4-4493-86b5-1df99e905773"/>
+				<textElement>
+					<font fontName="新宋体" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CITY}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="232" y="11" width="54" height="20" uuid="99dee38f-6477-423e-a798-9b395c389fe2"/>
+				<textElement>
+					<font fontName="新宋体" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DISTRICT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="303" y="11" width="58" height="20" uuid="13c26c2f-6dff-40f5-b613-d4d280233f7c"/>
+				<textElement>
+					<font fontName="新宋体" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{POSTCODE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="380" y="11" width="48" height="20" uuid="c5f41b41-99a5-410f-8980-1949970ad8d7"/>
+				<textElement>
+					<font fontName="新宋体" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SHORTCODE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="447" y="11" width="57" height="20" uuid="870d7a76-518f-43cb-a9d5-923b2be606bb"/>
+				<textElement>
+					<font fontName="新宋体" pdfFontName="STSong-Light" pdfEncoding="UniGB-UCS2-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CITYCODE}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

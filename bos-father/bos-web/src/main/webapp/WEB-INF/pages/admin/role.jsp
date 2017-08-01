@@ -34,9 +34,96 @@
 	src="${pageContext.request.contextPath }/js/ztree/jquery.ztree.all-3.5.js"
 	type="text/javascript"></script>	
 <script type="text/javascript">
+		var checknodes;// 接受 指定角色对应菜单对象的
+	    var setting = {
+	        check: {
+	          enable: true
+	        },
+	        data: {
+	          simpleData: {
+	            enable: true
+	          }
+	        }
+	      };
+		
 	$(function(){
+		
 		// 数据表格属性
 		$("#grid").datagrid({
+			iconCls : 'icon-forward',
+			fit : true,
+			border : false,
+			rownumbers : true,
+			striped : true,
+			pageList: [3,5,10],
+			pagination : true,
+			onDblClickRow:function(rowIndex,rowData){
+				//  权限列表回显
+				  $("#functionIds").empty();
+					$.ajax({
+					url : '${pageContext.request.contextPath}/function/ajaxList',
+					type : 'POST',
+					dataType : 'json',
+					success : function(data) {
+							 $(data).each(function(){
+								 //  List<Function>
+								 $("#functionIds").append("<input id='"+this.id+"' name='functionIds' type='checkbox' value='"+this.id+"'>"+this.name+"</input>&nbsp;&nbsp;");
+							 });
+							 
+					$.ajax({
+						url : '${pageContext.request.contextPath}/function/findFunctionByRoleId',
+						type : 'POST',
+						data:{"roleId":rowData.id},
+						dataType : 'json',
+						success : function(data) {
+							     var pa = $("input[name='functionIds']");
+								$(data).each(function(){
+									 //  List<Function>
+									      for(var i=0;i<pa.length;i++){
+									    	  if($(pa[i]).val()==this.id){
+												    $(pa[i]).attr("checked","checked");
+											   }
+									      }
+									 
+								 });
+								 
+							}
+						});
+							 
+		}
+					});
+				
+				
+				
+				//  双击事件 完成 角色修改回显操作....菜单树制作
+				$.ajax({
+					url : '${pageContext.request.contextPath}/menu/ajaxList',
+					type : 'POST',
+					dataType : 'text',
+					success : function(data) {
+						var zNodes = eval("(" + data + ")");
+						var treeObj = $.fn.zTree.init($("#functionTree"), setting, zNodes);
+						treeObj.expandAll(true);
+						var array = treeObj.transformToArray(treeObj.getNodes());//  所有树节点对象 转换对应 数组  
+						loadNodes(rowData.id);//  ajax  根据角色id 查询所有菜单
+						// checknodes
+						// var treeObj = $.fn.zTree.getZTreeObj("functionTree");
+							for (var i=0, l=array.length; i < l; i++) {
+									for (var j=0, m=checknodes.length; j <m; j++) {
+								      if(array[i].id ==checknodes[j].id){
+								        treeObj.checkNode(array[i], true, true);//  勾选 菜单节点
+								      }
+									}
+							}
+						
+					},
+					error : function(msg) {
+						alert('树加载异常!');
+					}
+				});
+				
+				       $('#roleWindow').window("open");
+			},
 			toolbar : [
 				{
 					id : 'add',
@@ -47,7 +134,7 @@
 					}
 				}           
 			],
-			url : '',
+			url : '${pageContext.request.contextPath}/role/pageQuery',
 			columns : [[
 				{
 					field : 'id',
@@ -60,18 +147,91 @@
 					width : 200
 				}, 
 				{
+					field : 'code',
+					title : '角色关键字',
+					width : 200
+				}, 
+				{
 					field : 'description',
 					title : '描述',
 					width : 200
 				} 
 			]]
 		});
+		
+		// 收派标准窗口
+		$('#roleWindow').window({
+	        title: '修改角色',
+	        width: 500,
+	        modal: true,
+	        shadow: true,
+	        closed: true,
+	        height: 300,
+	        resizable:false
+	    });
 	});
+	 function loadNodes(roleId){
+         $.ajax({
+           type:"post",
+           url:"${pageContext.request.contextPath}/menu/findMenuByRoleId",
+           data:{"roleId":roleId},
+           async:false,
+           dataType:"json",
+           success:function(data){
+        	   checknodes=data;
+           }
+         });
+   }
 </script>	
 </head>
 <body class="easyui-layout">
 	<div data-options="region:'center'">
 		<table id="grid"></table>
+	</div>
+	<div class="easyui-window" title="收派标准进行添加或者修改" id="roleWindow" collapsible="false" minimizable="false" maximizable="false" style="top:20px;left:200px">
+		<div region="north" style="height:31px;overflow:hidden;" split="false" border="false" >
+			<div class="datagrid-toolbar">
+				<a id="save" icon="icon-save" href="#" class="easyui-linkbutton" plain="true" >更新</a>
+			</div>
+		</div>
+		
+		<div region="center" style="overflow:auto;padding:5px;" border="false">
+			<form id="roleForm" method="post" action="${pageContext.request.contextPath}/role/save">
+				<table class="table-edit" width="80%" align="center">
+					<tr class="title">
+						<td colspan="2">角色信息</td>
+					</tr>
+					<tr>
+						<td width="200">角色关键字</td>
+						<td>
+							<input type="text" name="code" class="easyui-validatebox" data-options="required:true" />						
+						</td>
+					</tr>
+					<tr>
+						<td>角色名称</td>
+						<td><input type="text" name="name" class="easyui-validatebox" data-options="required:true" /></td>
+					</tr>
+					<tr>
+						<td>角色描述</td>
+						<td>
+							<textarea name="description" rows="4" cols="60"></textarea>
+						</td>
+					</tr>
+					<tr>
+						<td>权限</td>
+						<td id="functionsId">
+							<!-- functions表数据 -->
+						</td>
+					</tr>
+					<tr>
+						<td>菜单</td>
+						<td>
+							<ul id="functionTree" class="ztree"></ul>
+						</td>
+					</tr>
+					</table>
+			</form>
+		</div>
 	</div>
 </body>
 </html>

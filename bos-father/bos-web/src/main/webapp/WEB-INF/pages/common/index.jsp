@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -47,17 +49,18 @@
 		},"json");
 		
 		
-		// 系统管理菜单加载
-		$.post("${pageContext.request.contextPath}/json/admin.json",function(data){
-			$.fn.zTree.init($("#adminMenu"), setting, data);
-		},"json");
-		
+		// 系统管理菜单加载、
+		<shiro:hasRole name="admin">
+			$.post("${pageContext.request.contextPath}/json/admin.json",function(data){
+				$.fn.zTree.init($("#adminMenu"), setting, data);
+			},"json");
+		</shiro:hasRole>
 		// 页面加载后 右下角 弹出窗口
 		/**************/
 		window.setTimeout(function(){
 			$.messager.show({
 				title:"消息提示",
-				msg:'欢迎登录，超级管理员！ <a href="javascript:void" onclick="top.showAbout();">联系管理员</a>',
+				msg:'欢迎登录，<shiro:principal property="email"></shiro:principal>！ <a href="javascript:void" onclick="top.showAbout();">联系管理员</a>',
 				timeout:5000
 			});
 		},3000);
@@ -144,7 +147,7 @@
 		$.messager
 		.confirm('系统提示','您确定要退出本次登录吗?',function(isConfirm) {
 			if (isConfirm) {
-				location.href = '${pageContext.request.contextPath }/login.jsp';
+				location.href = '${pageContext.request.contextPath }/user/logout';
 			}
 		});
 	}
@@ -175,7 +178,7 @@
 		</div>
 		<div id="sessionInfoDiv"
 			style="position: absolute;right: 5px;top:10px;">
-			[<strong>超级管理员</strong>]，欢迎${sessionScope.loginUser.email }！
+			[<strong>超级管理员</strong>]，欢迎<shiro:principal property="email"></shiro:principal>
 			您使用[<strong>${pageContext.request.remoteAddr}</strong>]IP登录！
 		</div>
 		<div style="position: absolute; right: 5px; bottom: 10px; ">
@@ -204,9 +207,11 @@
 			<div title="基本功能" data-options="iconCls:'icon-mini-add'" style="overflow:auto">
 				<ul id="treeMenu" class="ztree"></ul>
 			</div>
-			<div title="系统管理" data-options="iconCls:'icon-mini-add'" style="overflow:auto">  
-				<ul id="adminMenu" class="ztree"></ul>
-			</div>
+			<shiro:hasRole name="admin">
+				<div title="系统管理" data-options="iconCls:'icon-mini-add'" style="overflow:auto">  
+					<ul id="adminMenu" class="ztree"></ul>
+				</div>
+			</shiro:hasRole>
 		</div>
 	</div>
 	<div data-options="region:'center'">

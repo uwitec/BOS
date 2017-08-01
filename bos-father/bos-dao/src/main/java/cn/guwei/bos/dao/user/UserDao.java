@@ -27,6 +27,8 @@ public interface UserDao extends JpaRepository<User, Integer> {
 	@Query("update User set password = ?2 where email = ?1")
 	void editPwd(String email, String password);
 
+	User findByEmail(String email);
+
 	// 在目标查询实体类上  用jpql语句 @nameQuery  
 //	User findUserByUsernameAndPassword(String username, String password);
 	
